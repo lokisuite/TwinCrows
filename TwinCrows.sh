@@ -16,6 +16,8 @@ source "$TCScripts/WebRecon.sh"
 source "$TCScripts/dirsearch.sh"
 source "$TCScripts/dependencias.sh"
 source "$TCLibPath/Ajuda.sh"
+source "$TCScripts/Funcoes.sh"
+
 
 # =========================================================================== #
 # =========================== < Opcoes default > ============================ # 
@@ -112,7 +114,7 @@ do
 	centralizado "Git: https://github.com/lokisuite/TwinCrows.git\n"
 	centralizado "${verde}V 1.0.0\n"
 	echo
-	echo "1 - whois				6 - Dirsearch"
+	echo "1 - whois				6 - Dirsearch			11 - Nmap utils"
 	echo "2 - Mapeamento de dominio		7 - Whatweb"
 	echo "3 - Transferencia de zona		8 - Pagesearch"
 	echo "4 - Bruteforce de subdominios		9 - PingSweep"
@@ -453,6 +455,83 @@ do
 		echo -e "Arquivo salvo em $TCWordlists/$nome"
 		echo
 		exit
+	;;
+# =========================================================================== #
+# ============================== < Nmap utils > ============================= #
+# =========================================================================== #
+	11)
+		echo -e "${verde}Este modulo explora varias funcionalidades do Nmap."
+		echo -e "Escolha uma opcao:"
+		echo
+		echo -e "${verde}1 - Descobrir hosts ativos na rede"
+                echo "2 - Escaneamento de portas padrao"
+                echo "3 - Escaneamento -sS por portas"
+                echo -e "6 - HINFO${normalbold}"
+                echo
+		read -n2 -p '>> ' resp3
+                echo
+                case $resp3 in
+                        "1")
+                                echo -e "${verde}Informe o IP do host com intervalo ex(192.168.0-255 ou 192.168.0/24):${normalbold}"
+                                read -p '>> ' dominio
+                                echo 
+                                echo
+				echo -e "${verde}Caso queira salvar um arquivo de saida, por favor informar:${normalbold}"
+				read -p '>> ' arquivo
+                                centralizado "${azulbold}===== RESULTADO =====${normal}\n"
+                                echo
+                                echo
+                                nmap_host $dominio $arquivo
+                                echo
+                                echo
+                                exit
+                        ;;
+			"2")
+				echo -e "${verde}Informe o IP do host:${normalbold}"
+				read -p '>> ' ip
+				echo -e "\n\n"
+				echo -e "${verde}Caso queira salvar um arquivo de saida, por favor informar:${normalbold}"
+                                read -p '>> ' arquivo
+                                centralizado "${azulbold}===== RESULTADO =====${normal}\n"
+                                echo
+                                echo
+				nmap_padrao $ip $arquivo
+				echo -e "\n\n"
+				exit
+			;;
+			"3")
+				echo -e "${verde}Deseja carregar um arquivo de hosts? [s/n].${normalbold}"
+				read -p '>> ' opcao
+				echo -e "\n\n"
+				if [ "$opcao" == "s" ]
+				then
+					echo -e "${verde}Informe o caminho para o arquivo:${normalbold}"
+					read -p '>> ' origem
+				else
+					echo -e "${verde}Informe o IP do host:${normalbold}"
+        	                        read -p '>> ' ip
+				fi
+                                echo -e "\n\n"
+				echo -e "${verde}Informe as portas ex(21,22,25 ou 0-80):${normalbold}"
+				read -p '>> ' porta
+				echo -e '\n\n'
+                                echo -e "${verde}Caso queira salvar um arquivo de saida, por fafor informe ${normalbold}"
+                                read -p '>> ' arquivo
+				centralizado "${azulbold}===== RESULTADO =====${normal}\n"
+				echo -e '\n\n'
+				if [ ! -z "$origem" ]
+				then
+					modo="-iL=$origem"
+				else
+					modo="$ip"
+				fi
+				nmap_portas $modo $porta $arquivo
+				echo -e "\n\n"
+				exit
+			;;
+		esac
+
+
 	;;
 # =========================================================================== #
 # ================================ < Sair > ================================= #
