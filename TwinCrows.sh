@@ -113,7 +113,7 @@ do
 	centralizado "${verde}V 1.0.0\n"
 	echo
 	echo "1 - whois				6 - Dirsearch"
-	echo "2 - Mapeamento de dominio		7 - Whatwheb"
+	echo "2 - Mapeamento de dominio		7 - Whatweb"
 	echo "3 - Transferencia de zona		8 - Pagesearch"
 	echo "4 - Bruteforce de subdominios		9 - PingSweep"
 	echo "5 - Pesquisa de DNS reverso		10 - Mutacao de wordlist"
