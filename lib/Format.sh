@@ -12,6 +12,7 @@ vermbold="\e[1;31m"
 azulbold="\e[1;34m"
 verdebold="\e[1;32m"
 normal="\e[0m"
+normalbold="\e[1;0m"
 
 
 centralizado(){
