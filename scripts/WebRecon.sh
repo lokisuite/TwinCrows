@@ -2,6 +2,12 @@
 
 
 webrecon() {
+	if [ "$4" == "proxychains" ] || [ "$3" == "proxychains" ]
+	then
+		torp="proxychains -q"
+	else
+		torp=""
+	fi
 	echo
 	echo -e "${azulbold}====== Escaneando URL: ${verdebold}$2 ${azulbold}======${normal}"
 	echo
@@ -11,7 +17,7 @@ webrecon() {
 	echo
 	for diretorio in $(cat $1)
 	do
-		resp=$(curl -s -o /dev/null -w "%{http_code}" -A "TwinCrows" $2/$diretorio/)
+		resp=$($(echo "$torp") curl -s -o /dev/null -w "%{http_code}" -A "TwinCrows" $2/$diretorio/)
 		if [ $resp == "200" ]
 		then
 			echo -ne "\rDiretorio encontrado: $2/$diretorio"
@@ -29,7 +35,7 @@ webrecon() {
 		echo
         	for diretorio in $(cat $1)
         	do
-                	resp=$(curl -s -o /dev/null -w "%{http_code}" -A "TwinCrows" $2/$diretorio.$3)
+                	resp=$($(echo "$torp") curl -s -o /dev/null -w "%{http_code}" -A "TwinCrows" $2/$diretorio.$3)
                 	if [ $resp == "200" ]
                 	then
                         	echo -ne "\rArquivo encontrado: $2/$diretorio.$3"
@@ -39,5 +45,5 @@ webrecon() {
                 	fi
         	done 
 	fi
-	dirsearch
+	sair
 }

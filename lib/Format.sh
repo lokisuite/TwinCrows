@@ -8,6 +8,7 @@
 vermelho="\e[31m"
 azul="\e[34m"
 verde="\e[32m"
+amarelo="\e[33m"
 vermbold="\e[1;31m"
 azulbold="\e[1;34m"
 verdebold="\e[1;32m"

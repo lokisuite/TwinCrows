@@ -41,6 +41,10 @@ dependencias() {
                         centralizado "${verdebold}[+] ${normal} instalando $lin..."
                         apt install $lin -y
                         clear
+			if [ "$lin" == "proxychains" ]
+			then
+				echo -e "${cinza}Para que o TwinCrows rode utilizando a rede Tor para anonimizacao, e necessario incluir 'socks5 127.0.0.1 9050' sem aspas  no arquivo de configuracao que se encontra em /etc/proxychains*.conf, caso tenha duvidas, procure o manual do Tor e do proxychains..${normal}"
+			fi
 		done
 		echo -e "\n\n"
 		centralizado "${azulbold}[+] Dependencias instaladas, execute normalmente.${normal}"
