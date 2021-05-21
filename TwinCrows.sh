@@ -56,8 +56,8 @@ echo -ne "${cinza}\n\n"
 
 banner=()
 
-banner+=("▀▀█▀▀ █░░░█ ░▀░ █▀▀▄ ▒█▀▀█ █▀▀█ █▀▀█ █░░░█ █▀▀ \n")
-banner+=("░▒█░░ █▄█▄█ ▀█▀ █░░█ ▒█░░░ █▄▄▀ █░░█ █▄█▄█ ▀▀█ \n")
+banner+=("▀▀█▀▀ █░░░█ ░▀░ █▀▀▄ ▒█▀▀█ █▀▀█ █▀▀█ █░░░█ █▀▀\n")
+banner+=("░▒█░░ █▄█▄█ ▀█▀ █░░█ ▒█░░░ █▄▄▀ █░░█ █▄█▄█ ▀▀█\n")
 banner+=("░▒█░░ ░▀░▀░ ▀▀▀ ▀░░▀ ▒█▄▄█ ▀░▀▀ ▀▀▀▀ ░▀░▀░ ▀▀▀\n")
 
 for linha in "${banner[@]}"
@@ -91,6 +91,7 @@ if [ ! -z "$dep" ]
 then
 	echo -e "\n${vermbold}Existem pacotes a serem instalados."
 	echo -e "Para prosseguir, execute ${verdebold} $0 -d ${normal}\n\n"
+	exit
 else
 	echo -e "\n"
 fi
@@ -134,7 +135,8 @@ do
 # =============================== < Whois > ================================= #
 # =========================================================================== #
 	1)
-		centralizado "${azulbold}===== whois =====\n${normal}"
+		centralizado "${azulbold}===== whois =====\n\n${normal}"
+		echo -e "${cinza}Este modulo executa uma pesquisa de whois no dominio informado, as informacoes entregues podem ser usadas para obter mais informacoes."
 		echo
 		echo -e "${verde}Digite o dominio ou IP:${normalbold}"
 		read  -p '>> ' dominio
@@ -148,7 +150,8 @@ do
 # ====================== < Mapeamento de dominio > ========================== #
 # =========================================================================== #
 	2) 
-		centralizado "${azulbold}===== Mapeamento de dominio =====\n${normal}"
+		centralizado "${azulbold}===== Mapeamento de dominio =====\n\n${normal}"
+		echo -e "${cinza}Este modulo traz informacoes valiosas sobre as configuracoes do servidor que podem ser usadas em ataques posteriores."
 		echo
 		echo -e "${verde}1 - Localizar IPv4"
 		echo "2 - Localizar IPv6"
@@ -258,6 +261,9 @@ do
 # ====================== < Transferencia de zona > ========================== #
 # =========================================================================== #
 	3)
+		centralizado "${azulbold}===== Transferencia de zona =====\n\n${normal}"
+		echo -e "${cinza}Este modulo faz uma tentativa de transferencia de zona, caso a configuracao esteja mal feita, todos os hosts do range serao revelados."
+		echo
 		echo -e "${verde}Informe o dominio:${normalbold}"
                 read -p '>> ' dominio
                 echo
@@ -276,6 +282,9 @@ do
 # ==================== < Bruteforce de subdominio > ========================= #
 # =========================================================================== #
 	4)
+		centralizado "${azulbold}===== Bruteforce de subdominio =====\n\n${normal}"
+		echo -e "${cinza}Este modulo faz um bruteforce para encontrar subdominios listados, o TwinCrows vem com uma wordlist padrao, porem uma outra pode ser fornecida."
+		echo
 		echo -e "${verde}Informe o dominio:${normalbold}"
                 read -p '>> ' dominio
                 echo
@@ -318,6 +327,9 @@ do
 # =========================== < DNS reverso > =============================== #
 # =========================================================================== #
 	5)
+		centralizado "${azulbold}===== DNS Reverso =====\n\n${normal}"
+		echo -e "${cinza}Este modulo faz uma pesquisa reversa, a partir de um range de IP coletado em modulos anteriores, e possivel fazer uma pesquisa e revelar qual deles tem um dominio associado."
+		echo
 		echo -e "${verde}Informe o IP da rede Ex 37.59.174.226:${normalbold}"
                 read -p '>> ' ip
 		echo $ip > ip
@@ -348,13 +360,14 @@ do
 # ============================ < Dirsearch > ================================ #
 # =========================================================================== #
 	6)
+		centralizado "${azulbold}===== Dirsearch =====\n\n${normal}"
+		echo -e "${cinza}Este modulo faz um bruteforce de diretorios na pagina web, utiliza de uma wordlist que o TwinCrows fornece, ou permite utilizacao de outra. Alem de diretorios, este modulo tambem faz pesquisa por extensoes de paginas, como php, asp, html... Afim de encontrar paginas acessiveis."
+		echo
 		echo -e "${verde}Informe o dominio:${normalbold}"
                 read -p '>> ' dominio
                 echo
-                echo
 		echo -e "${verde}Informe uma extensao ex(php) ou pressione enter para não pesquisar por arquivos:${normalbold}"
 		read -p '>> ' extensao
-		echo
 		echo
 		echo -e "${verde}Deseja informar uma wordlist?"
                 echo "1 - Sim"
@@ -380,12 +393,13 @@ do
 # ============================= < Whatweb > ================================= #
 # =========================================================================== #
 	7)
+		centralizado "${azulbold}===== Whatweb =====\n\n${normal}"
+		echo -e "${cinza}Este modulo executa o whatweb e enumera informacoes detalhadas sobre o servidor, paginas e tecnologias utilizadas na pagina."
+		echo
 		echo -e "${verde}Informe o dominio:${normalbold}"
                 read -p '>> ' dominio
                 echo
-                echo
 		centralizado "${azulbold}===== RESULTADO =====${normal}\n"
-                echo
                 echo
 		whatweb -v $dominio
 		exit
@@ -394,16 +408,16 @@ do
 # =========================== < Pagesearch > ================================ #
 # =========================================================================== #
 	8)
+		centralizado "${azulbold}===== Pagesearch =====\n\n${normal}"
+		echo -e "${cinza}Este modulo utiliza uma google dork para enumerar paginas de um website de acordo com a extensao pesquisada, ex php,asp, html."
+		echo
 		echo -e "${verde}Informe o dominio:${normalbold}"
                 read -p '>> ' dominio
-                echo
                 echo
 		echo -e "${verde}Informe a extensão da pagina ex(php):${normalbold}"
 		read -p '>> ' extensao
 		echo
-		echo
                 centralizado "${azulbold}===== RESULTADO =====${normal}\n"
-                echo
                 echo
 		saida=$(lynx -dump "http://google.com/search?num=500&q=site:"$dominio"+ext:"$extensao"" | cut -d "=" -f2 | grep ".$extensao" | egrep -v "site|google" | sed s'/...$//'g)
 		if [ -z "$saida" ]
@@ -412,7 +426,7 @@ do
 			exit
 		else
 			lynx -dump "http://google.com/search?num=500&q=site:"$dominio"+ext:"$extensao"" | cut -d "=" -f2 | grep ".$extensao" | egrep -v "site|google" | sed s'/...$//'g
-			echo -e "\n\n"
+			echo -e "\n"
 		fi
 		exit
 	;;
@@ -420,6 +434,9 @@ do
 # ============================ < PingSweep > ================================ #
 # =========================================================================== #
 	9)
+		centralizado "${azulbold}===== PingSweep =====\n\n${normal}"
+		echo -e "${cinza}Este modulo realiza um ping sweep em um intervalo de IPs e retorna quais estao ativos na rede."
+		echo
 		echo -e "${verde}Informe o IP da rede Ex 37.59.174.226:${normalbold}"
                 read -p '>> ' ip
                 echo $ip > ip
@@ -428,30 +445,29 @@ do
                 read -p '>> ' intervalo
                 echo
                 centralizado "${azulbold}===== RESULTADO =====${normal}\n"
-		echo
                 echo
                 prefixo=$(awk -F. '{print $1"."$2"."$3}' ip)
                 prefixo2=$(awk -F. '{print $1"-"$2"-"$3}' ip)
                 for range in $(seq $intervalo);do ping -c 1 $prefixo.$range -w 1| grep "64 bytes" | cut -d " " -f4 | sed s'/.$//'g
 		done
 		exit
-		echo
-		echo
 
 	;;
 # =========================================================================== #
 # ========================= < Mutacao de wordlist > ========================= #
 # =========================================================================== #
 	10)
-		echo -e "${verde}Este modulo cria mutação de wordlist existentes, quanto maior a lista de palavras, o tamanho do resultado sera exponencial!\n"
-		echo -e "Informe o caminho da wordlist base:${normalbold}"
+		centralizado "${azulbold}===== Mutacao de Wordlist =====\n\n${normal}"
+		echo -e "${cinza}Este modulo faz uma mutacao de palavras chave para explorar suas variacoes, quanto maior a lista de palavras chave, maior sera o resultado final."
+		echo
+		echo -e "${verde}Informe o caminho da wordlist base:${normalbold}"
 		read -p '>> ' wl
 		echo -e "\n"
 		echo -e "${verde}Informe o nome para o arquivo de saida da wordlist mutada:${normalbold}"
 		read -p '>> ' nome
 		echo -e "\n\n"
 		python3 $TCScripts/wlmutacao.py $wl $TCWordlists/$nome
-		echo -e "\n\n"
+		echo -e "\n"
 		echo -e "Arquivo salvo em $TCWordlists/$nome"
 		echo
 		exit
@@ -460,13 +476,15 @@ do
 # ============================== < Nmap utils > ============================= #
 # =========================================================================== #
 	11)
-		echo -e "${verde}Este modulo explora varias funcionalidades do Nmap."
+		centralizado "${azulbold}===== Nmap utils =====\n\n${normal}"
+		echo -e "${cinza}Este modulo traz algumas opcoes pre configuradas de utilizacao do nmap, como o nmap e uma ferramenta extremamente completa, estes modulos sao so uma fracao de sua capacidade."
+		echo
 		echo -e "Escolha uma opcao:"
 		echo
 		echo -e "${verde}1 - Descobrir hosts ativos na rede"
                 echo "2 - Escaneamento de portas padrao"
                 echo "3 - Escaneamento -sS por portas"
-                echo -e "6 - HINFO${normalbold}"
+                echo -e "4 - Scan com evasion de firewall/IDS${normalbold}"
                 echo
 		read -n2 -p '>> ' resp3
                 echo
@@ -527,6 +545,25 @@ do
 				fi
 				nmap_portas $modo $porta $arquivo
 				echo -e "\n\n"
+				exit
+			;;
+			"4")
+				echo -e "${verde}Informe o IP do host:${normalbold}"
+				read -p '>> ' ip
+				echo -e "\n"
+				echo -e "${verde}Informe a porta para bypass:${normalbold}"
+				read -p '>> ' portabp
+				echo -e "\n"
+				echo -e "${verde}Informe a quantidade de IPs falsos:${normalbold}"
+				read -p '>> ' decoy
+				echo -e "\n"
+				echo -e "${verde}Informe as portas ex(21,22,25 ou 0-80):${normalbold}"
+				read -p '>> ' porta
+				echo -e "\n"
+				echo -e "${verde}Caso queira salvar um arquivo de saida, por favor informe:${normalbold}"
+				read -p '>> ' arquivo
+				echo
+				nmap_firewall $ip $portabp $decoy $porta $arquivo
 				exit
 			;;
 		esac

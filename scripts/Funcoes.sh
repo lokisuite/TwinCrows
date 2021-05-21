@@ -28,9 +28,21 @@ nmap_padrao() {
 nmap_portas() {
 	if [ -z "$3" ] 
 	then
-		nmap -sS -p $2 -v --open -Pn $1
+		nmap -sS -p $2  --open -Pn $1
 	else
-		nmap -sS -p $2 -v --open -Pn $1 > $3
+		nmap -sS -p $2  --open -Pn $1 > $3
 		echo -e "\n\narquivo salvo em $3"
+	fi
+}
+
+nmap_firewall() {
+	if [ -z "$5" ]
+	then
+		nmap -v -sS -O -sV -g $2 -D RND:$3 -T4 -p $4 -Pn --open $1
+
+	else
+		nmap -v -sS -O -sV -g $2 -D RND:$3 -T4 -p $4 -Pn --open $1 > $5
+		cat $5
+		echo -e "\n\nArquivo salvo em $5\n\n"
 	fi
 }

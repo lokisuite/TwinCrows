@@ -35,7 +35,7 @@ dependencias() {
 	if [ ! -z "$dep" ]
 	then
         	echo -e "\n${vermbold}Instalando dependencias..."
-		apt get update
+		apt update
 		for lin in "${dep[@]}"
                 do
                         centralizado "${verdebold}[+] ${normal} instalando $lin..."
