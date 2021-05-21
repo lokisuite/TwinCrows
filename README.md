@@ -1,4 +1,4 @@
-![TwinCrows](https://raw.githubusercontent.com/lokisuite/images/main/tc/tc.jpg)
+![TwinCrows](https://raw.githubusercontent.com/lokisuite/images/main/tc/tc-logo.jpg)
 
 # TwinCrows é uma solução simples e centralizada para coleta de informaçõs Web e Infra
 
