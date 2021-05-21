@@ -95,14 +95,8 @@ then
 else
 	echo -e "\n"
 fi
-centralizado "${azulbold}[+] Todas as dependencias ja estao instaladas.${normal}\n\n"
-
-
-
-
-
-
-
+centralizado "${azulbold}[+] Todas as dependencias ja estao instaladas.${normal}"
+echo -e "\n\n"
 
 
 # =========================================================================== #
@@ -113,9 +107,9 @@ do
 
 	echo
 	centralizado "Git: https://github.com/lokisuite/TwinCrows.git\n"
-	centralizado "${verde}V 1.0.0\n"
+	centralizado "${vermelho}v 1.0.0\n"
 	echo
-	echo "1 - whois				6 - Dirsearch			11 - Nmap utils"
+	echo -e "${verde}1 - whois				6 - Dirsearch			11 - Nmap utils"
 	echo "2 - Mapeamento de dominio		7 - Whatweb"
 	echo "3 - Transferencia de zona		8 - Pagesearch"
 	echo "4 - Bruteforce de subdominios		9 - PingSweep"
