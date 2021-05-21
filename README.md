@@ -1,4 +1,4 @@
-![TwinCrows](https://raw.githubusercontent.com/lokisuite/images/main/tc/tc-logo.jpg)
+<img src="https://raw.githubusercontent.com/lokisuite/images/main/tc/tc-logo.jpg"  height="600" />
 
 # TwinCrows é uma solução simples e centralizada para coleta de informaçõs Web e Infra
 
@@ -33,7 +33,7 @@ chmod +x TwinCrows.sh
 
 A interface do TwinCrows é intuitiva e traz um menu com várias opções que consequentemente permitem levantar informações disponíveis sobre o alvo.
 
-![TC](https://raw.githubusercontent.com/lokisuite/images/main/tc/tc-print.jpeg)
+![TC](https://raw.githubusercontent.com/lokisuite/images/main/tc/tc_print.png)
 
 ## :heavy_exclamation_mark: Requisitos
 
