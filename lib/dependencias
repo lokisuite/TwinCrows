@@ -2,5 +2,5 @@ whatweb
 curl
 lynx
 python3
-tor
 proxychains
+tor

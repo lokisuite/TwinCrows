@@ -109,11 +109,12 @@ do
 	centralizado "Git: https://github.com/lokisuite/TwinCrows.git\n"
 	centralizado "${vermelho}v 1.1.0\n"
 	echo
-	echo -e "${verde}1 - whois				6 - Whatweb"
-	echo "2 - Mapeamento de dominio		7 - Pagesearch"
-	echo "3 - Bruteforce de subdominios		8 - PingSweep"
-	echo "4 - Pesquisa de DNS reverso		9 - Mutacao de wordlist"
-	echo "5 - Dirsearch				10 - Nmap utils"
+	echo -e "${verde}1 - HTML Parsing			7 - Whatweb"
+	echo "2 - whois				8 - Pagesearch"
+	echo "3 - Mapeamento de dominio		9 - PingSweep"
+	echo "4 - Bruteforce de subdominios		10 - Mutacao de wordlist"
+	echo "5 - Pesquisa de DNS reverso		11 - Nmap utils"
+	echo "6 - Dirsearch"
 	echo
 	echo -e "0 - sair${normal}"
 
@@ -126,96 +127,69 @@ do
 	case $opcao in
 
 # =========================================================================== #
-# =============================== < Whois > ================================= #
+# =========================== < HTML Parsing > ============================== #
 # =========================================================================== #
 	1)
 		menu_um $0
 	;;
 # =========================================================================== #
+# =============================== < Whois > ================================= #
+# =========================================================================== #
+	2)
+		menu_dois $0
+	;;
+# =========================================================================== #
 # ====================== < Mapeamento de dominio > ========================== #
 # =========================================================================== #
-	2) 
-		menu_dois $0
+	3) 
+		menu_tres $0
 	;;
 # =========================================================================== #
 # ==================== < Bruteforce de subdominio > ========================= #
 # =========================================================================== #
-	3)
-		menu_tres $0 $wlsubdominio
+	4)
+		menu_quatro $0 $wlsubdominio
 	;;
-
-
-
 # =========================================================================== #
 # =========================== < DNS reverso > =============================== #
 # =========================================================================== #
-	4)
-		menu_quatro $0
+	5)
+		menu_cinco $0
 	;;
 # =========================================================================== #
 # ============================ < Dirsearch > ================================ #
 # =========================================================================== #
-	5)
-		menu_cinco $0 $wldiretorio
+	6)
+		menu_seis $0 $wldiretorio
 	;;
 # =========================================================================== #
 # ============================= < Whatweb > ================================= #
-# =========================================================================== #
-	6)
-		menu_seis $0
-	;;
-# =========================================================================== #
-# =========================== < Pagesearch > ================================ #
 # =========================================================================== #
 	7)
 		menu_sete $0
 	;;
 # =========================================================================== #
-# ============================ < PingSweep > ================================ #
+# =========================== < Pagesearch > ================================ #
 # =========================================================================== #
 	8)
-		centralizado "${azulbold}===== PingSweep =====\n\n${normal}"
-		echo -e "${cinza}Este modulo realiza um ping sweep em um intervalo de IPs e retorna quais estao ativos na rede."
-		echo
-		echo -e "${verde}Informe o IP da rede Ex 37.59.174.226:${normalbold}"
-                read -p '>> ' ip
-                echo $ip > ip
-                echo
-                echo -e "${verde}Digite o intervalo do netrange Ex: 220 226${normalbold}"
-                read -p '>> ' intervalo
-                echo
-                centralizado "${azulbold}===== RESULTADO =====${normal}\n"
-                echo
-                prefixo=$(awk -F. '{print $1"."$2"."$3}' ip)
-                prefixo2=$(awk -F. '{print $1"-"$2"-"$3}' ip)
-                for range in $(seq $intervalo);do ping -c 1 $prefixo.$range -w 1| grep "64 bytes" | cut -d " " -f4 | sed s'/.$//'g
-		done
-		exit
-
+		menu_oito $0
+	;;
+# =========================================================================== #
+# ============================ < PingSweep > ================================ #
+# =========================================================================== #
+	9)
+		menu_nove $0
 	;;
 # =========================================================================== #
 # ========================= < Mutacao de wordlist > ========================= #
 # =========================================================================== #
-	9)
-		centralizado "${azulbold}===== Mutacao de Wordlist =====\n\n${normal}"
-		echo -e "${cinza}Este modulo faz uma mutacao de palavras chave para explorar suas variacoes, quanto maior a lista de palavras chave, maior sera o resultado final."
-		echo
-		echo -e "${verde}Informe o caminho da wordlist base:${normalbold}"
-		read -p '>> ' wl
-		echo -e "\n"
-		echo -e "${verde}Informe o nome para o arquivo de saida da wordlist mutada:${normalbold}"
-		read -p '>> ' nome
-		echo -e "\n\n"
-		python3 $TCScripts/wlmutacao.py $wl $TCWordlists/$nome
-		echo -e "\n"
-		echo -e "Arquivo salvo em $TCWordlists/$nome"
-		echo
-		exit
+	10)
+		menu_dez $0
 	;;
 # =========================================================================== #
 # ============================== < Nmap utils > ============================= #
 # =========================================================================== #
-	10)
+	11)
 		centralizado "${azulbold}===== Nmap utils =====\n\n${normal}"
 		echo -e "${cinza}Este modulo traz algumas opcoes pre configuradas de utilizacao do nmap, como o nmap e uma ferramenta extremamente completa, estes modulos sao so uma fracao de sua capacidade."
 		echo

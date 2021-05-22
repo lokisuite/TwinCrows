@@ -2,17 +2,18 @@
 
 
 webrecon() {
-	if [ "$4" == "proxychains" ] || [ "$3" == "proxychains" ]
-	then
-		torp="proxychains -q"
-	else
-		torp=""
-	fi
 	echo
 	echo -e "${azulbold}====== Escaneando URL: ${verdebold}$2 ${azulbold}======${normal}"
 	echo
 	qtd=$(cat $1 | wc -l)
 	echo -e "Wordlist com $qtd linhas\n\n"
+	if [ "$4" == "proxychains" ] || [ "$3" == "proxychains" ]
+	then
+		torp="proxychains -q"
+		echo -e "Scandir utilizando a proxy tor e mais lenta que o convencional.\n\n"
+	else
+		torp=""
+	fi
 	echo "DIRETORIOS"
 	echo
 	for diretorio in $(cat $1)
@@ -27,7 +28,7 @@ webrecon() {
 		fi
 	done
 
-	if [ ! -z "$3" ]
+	if [ ! -z "$3" ] && [ "$3" != "proxychains" ]
 	then
 		echo
 		echo
