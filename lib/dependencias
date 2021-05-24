@@ -3,4 +3,5 @@ curl
 lynx
 python3
 proxychains
+exiftool
 tor

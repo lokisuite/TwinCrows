@@ -5,7 +5,7 @@ sair() {
 	exit
 }
 
-menu_um() {
+tc_html_parsing() {
 	centralizado "${azulbold}===== HTML parsing =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz um parsing no codiho html da pagina informada e extrai todos os links encontrados e seus respectivos IPs de servidor.${normal}"
 	echo
@@ -33,14 +33,14 @@ menu_um() {
         read -p '>> ' opcao
         if [ "$opcao" == "s" ]
         then
-                menu_um
+                tc_html_parsing
         else
                 exec $1
         fi
 
 }
 
-menu_dois() {
+tc_whois() {
 	centralizado "${azulbold}===== whois =====\n\n${normal}"
         echo -e "${cinza}Este modulo executa uma pesquisa de whois no dominio informado, as informacoes entregues podem ser usadas para obter mais informacoes."
         echo
@@ -49,18 +49,18 @@ menu_dois() {
         echo
         centralizado "${azulbold}=====RESULTADO======${normal}\n"
         echo
-        python $TCScripts/whois.py $dominio
+        whois $dominio
 	echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
 	read -p '>> ' opcao
 	if [ "$opcao" == "s" ]
 	then
-		menu_dois
+		tc_whois
 	else
 		exec $1
 	fi
 }
 
-menu_tres() {
+tc_map_dom() {
 	centralizado "${azulbold}===== Mapeamento de dominio =====\n\n${normal}"
 	echo -e "${cinza}Este modulo traz informacoes valiosas sobre as configuracoes do servidor, como enderecos de IP, servidores de DNS, servidores de e-mail, configuracoes, alem de fazer uma tentativa de transferencia de zona, estas informacoes podem ser usadas em ataques posteriores."
 	echo
@@ -89,13 +89,13 @@ menu_tres() {
         read -p '>> ' opcao
         if [ "$opcao" == "s" ]
         then
-                menu_tres
+                tc_map_dom
         else
                 exec $1
         fi
 }
 
-menu_quatro() {
+tc_bf_subd() {
 	wlsubdominio=$2
 	centralizado "${azulbold}===== Bruteforce de subdominio =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz um bruteforce para encontrar subdominios listados, o TwinCrows vem com uma wordlist padrao, porem uma outra pode ser fornecida."
@@ -126,7 +126,7 @@ menu_quatro() {
 	sair
 }
 
-menu_cinco() {
+tc_dns_rev() {
 	centralizado "${azulbold}===== DNS Reverso =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma pesquisa reversa, a partir de um range de IP coletado em modulos anteriores, e possivel fazer uma pesquisa e revelar qual deles tem um dominio associado."
 	echo
@@ -154,7 +154,7 @@ menu_cinco() {
         read -p '>> ' opcao
         if [ "$opcao" == "s" ]
         then
-                menu_cinco
+                tc_dns_rev
         else
                 exec $1
         fi
@@ -162,7 +162,7 @@ menu_cinco() {
 
 }
 
-menu_seis() {
+tc_dirsearch() {
 	wldiretorio=$2
 	centralizado "${azulbold}===== Dirsearch =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz um bruteforce de diretorios na pagina web, utiliza de uma wordlist que o TwinCrows fornece, ou permite utilizacao de outra. Alem de diretorios, este modulo tambem faz pesquisa por extensoes de paginas, como php, asp, html... Afim de encontrar paginas acessiveis. Este modulo tambem permite o uso da rede Tor para anonimizacao das pesquisas."
@@ -194,7 +194,7 @@ menu_seis() {
 
 }
 
-menu_sete() {
+tc_whatweb() {
 	centralizado "${azulbold}===== Whatweb =====\n\n${normal}"
 	echo -e "${cinza}Este modulo executa o whatweb e enumera informacoes detalhadas sobre o servidor, paginas e tecnologias utilizadas na pagina."
 	echo
@@ -209,13 +209,13 @@ menu_sete() {
         read -p '>> ' opcao
         if [ "$opcao" == "s" ]
         then
-                menu_sete
+                tc_whatweb
         else
                 exec $1
         fi
 }
 
-menu_oito() {
+tc_pagesearch() {
 	centralizado "${azulbold}===== Pagesearch =====\n\n${normal}"
 	echo -e "${cinza}Este modulo utiliza uma google dork para enumerar paginas de um website de acordo com a extensao pesquisada, ex php,asp, html."
 	echo
@@ -239,14 +239,14 @@ menu_oito() {
         read -p '>> ' opcao
         if [ "$opcao" == "s" ]
         then
-                menu_oito
+                tc_pagesearch
         else
                 exec $1
         fi
 
 }
 
-menu_nove() {
+tc_pingsweep() {
 	centralizado "${azulbold}===== PingSweep =====\n\n${normal}"
 	echo -e "${cinza}Este modulo realiza um ping sweep em um intervalo de IPs e retorna quais estao ativos na rede."
 	echo
@@ -268,13 +268,13 @@ menu_nove() {
         read -p '>> ' opcao
         if [ "$opcao" == "s" ]
         then
-                menu_nove
+                tc_pingsweep
         else
                 exec $1
         fi
 }
 
-menu_dez() {
+tc_mt_wl() {
 	centralizado "${azulbold}===== Mutacao de Wordlist =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma mutacao de palavras chave para explorar suas variacoes, quanto maior a lista de palavras chave, maior sera o resultado final."
 	echo
@@ -292,7 +292,7 @@ menu_dez() {
         read -p '>> ' opcao
         if [ "$opcao" == "s" ]
         then
-                menu_dez
+                tc_mt_wl
         else
                 exec $1
         fi
@@ -300,7 +300,42 @@ menu_dez() {
 
 }
 
+tc_metadados() {
+	centralizado "${azulbold}===== Analise de metadados =====\n\n${normal}"
+	echo -e "${cinza}Este modulo faz uma pesquisa utilizando dorks para encontrar arquivos disponiveis em uma pagina, ao encontralos, faz o download no diretorio informado e em seguida faz a analise de seus metadados."
+	echo
+	echo -e "${verde}Informe o dominio para a pesquisa:${normalbold}"
+	read -p '>> ' dominio
+	echo -e '\n'
+	echo -e "${verde}Informe a extensao para pesquisa de arquivo ex pdf, txt ou xlsx:${normalbold}"
+	read -p '>> ' arquivo
+	echo -e '\n'
+	echo -e "${verde}Informe o caminho para salvar os arquivos baixados:${normalbold}"
+	read -p '>> ' caminho
+	echo -e '\n'
+	lynx --dump "https://google.com/search?&q=site:"$dominio"+ext:"$arquivo"" | grep ".$arquivo" | cut -d "=" -f2 | egrep -v "google|site" | sed 's/...$//' > arquivos
+	if [ $(cat arquivos | wc -l) == 0 ]
+	then
+		echo -e "\nNenhum arquivo encontrado\n"
+	else
+		for url in $(cat arquivos)
+		do
+			wget -q -P $caminho $url
+		done
+		exiftool $caminho/*.$arquivo
+	fi
+	rm -f arquivos
+	echo
+        echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
+        read -p '>> ' opcao
+        if [ "$opcao" == "s" ]
+        then
+                tc_metadados
+        else
+                exec $1
+        fi
 
+}
 
 
 

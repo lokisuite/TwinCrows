@@ -23,7 +23,8 @@ dependencias() {
 	echo -e "\n\n"
 	for lin in $(cat $TCLibPath/dependencias)
 	do
-        	if [ $(dpkg --get-selections | grep $lin | wc -l) == 0 ]
+		ins=$(builtin type -p $lin | wc -l)
+        	if [ "$ins" == 0 ]
         	then
                 	echo -e "${vermbold}[-] $lin nao instalado.${normal}"
                 	dep+=($lin)
