@@ -24,7 +24,6 @@ source "$TCScripts/Funcoes.sh"
 # =========================================================================== #
 wlsubdominio="$TCWordlists/subdominios.txt"
 wldiretorio="$TCWordlists/diretorios.txt"
-
 # =========================================================================== #
 # ======================== < Checando Permissoes > ========================== # 
 # =========================================================================== #
@@ -50,55 +49,43 @@ fi
 # =========================================================================== #
 # ======================== < Iniciando Processos > ========================== # 
 # =========================================================================== #
-clear
 
-echo -ne "${cinza}\n\n"
-
-banner=()
-
-banner+=("▀▀█▀▀ █░░░█ ░▀░ █▀▀▄ ▒█▀▀█ █▀▀█ █▀▀█ █░░░█ █▀▀\n")
-banner+=("░▒█░░ █▄█▄█ ▀█▀ █░░█ ▒█░░░ █▄▄▀ █░░█ █▄█▄█ ▀▀█\n")
-banner+=("░▒█░░ ░▀░▀░ ▀▀▀ ▀░░▀ ▒█▄▄█ ▀░▀▀ ▀▀▀▀ ░▀░▀░ ▀▀▀\n")
-
-for linha in "${banner[@]}"
-do
-	centralizado $linha
-	sleep 0.05
-done
-
-echo -ne "${normal}\n"
-
+tc_banner
 
 # =========================================================================== #
 # ===================== < Verificando dependencias > ======================== # 
 # =========================================================================== #
 
-dep=()
-centralizado "${verde}Verificando dependencias..."
-echo -e "\n\n"
-for lin in $(cat $TCLibPath/dependencias)
-do
-	ins=$(builtin type -p $lin | wc -l)
-	if [ "$ins" == 0 ]
-	then
-		echo -e "${vermbold}[-] $lin nao instalado.${normal}"
-		dep+=($lin)
-	else
-		echo -e "${azulbold}[+] $lin instalado.${normal}"
-	fi
+centralizado "git: https://github.com/lokisuite/TwinCrows.git\n"
+centralizado "${vermelho}v 1.1.0\n${normal}"
+
+echo -e "\n\n${cinza}TwinCrows e uma suite de ferramentas de reconhecimento e enumeracao que auxilia na obtencao de informacoes de alvos. A suite permite reconhecimento desde infra a tecnologias e servicos operantes reunindo varias abordagens diferentes.\nEnjoy!!${normal}\n"
+
+dependencias() {
+	local dep=()
+	for lin in $(cat $TCLibPath/dependencias)
+	do
+		ins=$(builtin type -p $lin | wc -l)
+		if [ "$ins" == 0 ]
+		then
+			echo -e "${vermbold}[-] $lin nao instalado.${normal}"
+			dep+=($lin)
+		fi
+		sleep 0.05
+	done
 	sleep 0.05
-done
-sleep 0.05
-if [ ! -z "$dep" ]
-then
-	echo -e "\n${vermbold}Existem pacotes a serem instalados."
-	echo -e "Para prosseguir, execute ${verdebold} $0 -d ${normal}\n\n"
-	exit
-else
+	if [ ! -z "$dep" ]
+	then
+		echo -e "\n${vermbold}Existem pacotes a serem instalados."
+		echo -e "Para prosseguir, execute ${verdebold} $0 -d ${normal}\n\n"
+		exit
+	fi
+	centralizado "${azulbold}[+] Todas as dependencias ja estao instaladas.${normal}"
 	echo -e "\n"
-fi
-centralizado "${azulbold}[+] Todas as dependencias ja estao instaladas.${normal}"
-echo -e "\n"
+}
+
+dependencias
+
 
 
 # =========================================================================== #
@@ -108,15 +95,12 @@ while :
 do
 
 	echo
-	centralizado "Git: https://github.com/lokisuite/TwinCrows.git\n"
-	centralizado "${vermelho}v 1.1.0\n"
-	echo
 	echo -e "${verde}1 - HTML Parsing			7 - Whatweb"
 	echo "2 - whois				8 - Pagesearch"
 	echo "3 - Mapeamento de dominio		9 - PingSweep"
 	echo "4 - Bruteforce de subdominios		10 - Mutacao de wordlist"
 	echo "5 - Pesquisa de DNS reverso		11 - Analise de metadados"
-	echo "6 - Dirsearch				12 - Nmap utils"
+	echo "6 - Dirsearch				12 - Enumeration"
 	echo
 	echo -e "0 - sair${normal}"
 
@@ -193,6 +177,12 @@ do
 # =========================================================================== #
         11)
                 tc_metadados $0
+        ;;
+# =========================================================================== #
+# ================== < Analise de metadados de arquivos > =================== #
+# =========================================================================== #
+        12)
+                tc_enumeration $0
         ;;
 # =========================================================================== #
 # ============================== < Nmap utils > ============================= #

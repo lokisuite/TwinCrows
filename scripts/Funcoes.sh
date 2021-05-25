@@ -1,5 +1,26 @@
 #!/bin/bash
 
+tc_banner() {
+	clear
+
+	echo -ne "${cinza}\n\n"
+
+	local banner=()
+
+	banner+=("▀▀█▀▀ █░░░█ ░▀░ █▀▀▄ ▒█▀▀█ █▀▀█ █▀▀█ █░░░█ █▀▀\n")
+	banner+=("░▒█░░ █▄█▄█ ▀█▀ █░░█ ▒█░░░ █▄▄▀ █░░█ █▄█▄█ ▀▀█\n")
+	banner+=("░▒█░░ ░▀░▀░ ▀▀▀ ▀░░▀ ▒█▄▄█ ▀░▀▀ ▀▀▀▀ ░▀░▀░ ▀▀▀\n")
+
+	for linha in "${banner[@]}"
+	do
+		centralizado $linha
+		sleep 0.05
+	done
+
+	echo -ne "${normal}\n"
+
+}
+
 sair() {
 	echo -e "${cinza}\n\nOBRIGADO POR UTILIZAR O TWINCROWS!\n\n${normal}"
 	exit
@@ -7,7 +28,7 @@ sair() {
 
 tc_html_parsing() {
 	centralizado "${azulbold}===== HTML parsing =====\n\n${normal}"
-	echo -e "${cinza}Este modulo faz um parsing no codiho html da pagina informada e extrai todos os links encontrados e seus respectivos IPs de servidor.${normal}"
+	echo -e "${cinza}Este modulo faz um parsing no codigo html da pagina informada e extrai todos os links encontrados e seus respectivos IPs de servidor.${normal}"
 	echo
 	echo -e "${verde}Informe o dominio:${normalbold}"
 	read -p '>> ' dominio
@@ -336,6 +357,127 @@ tc_metadados() {
         fi
 
 }
+
+tc_enumeration() {
+	tc_banner
+
+	centralizado "${azulbold}===== ENUMERATION =====\n\n${normal}"
+	echo -e "${cinza}Este modulo permite a enumeracao de diversos servicos hospedados em servidores.${normal}"
+
+
+	while :
+	do
+
+        echo
+        echo -e "${verde}1 - FTP Enumeration"
+	echo -e "2 - NetBIOS/SMB Enumeration"
+	echo -e "3 - SMTP Enumeration e bruteforce"
+        echo
+        echo -e "0 - voltar${normal}"
+
+        echo -e "${normalbold}"
+
+        read  -p '>> ' opcao
+
+        echo
+
+        case $opcao in
+
+		1)
+			centralizado "${azulbold}===== Enumeracao de FTP =====\n\n${normal}"
+			echo -e "${cinza}Este modulo faz uma conexao com o servidor ftp alvo e captura seu banner, logo em seguida faz a tentativa de login com um usuario informado e executa um comando."
+			echo
+			echo -e "${verde}Informe o IP do servidor ftp alvo:${normalbold}"
+			read -p '>> ' ip
+			echo -e "${verde}Informe a porta, caso seja diferente de 21:${normalbold}"
+			read -p '>> ' ftpport
+			if [ "$ftpport" == "" ]
+			then
+				ftpport=21
+			fi
+			echo -e "${verde}Informe um usuario para tentativa de login (default: anonymous):${normalbold}"
+			read -p '>> ' ftpuser
+			if [ "$ftpuser" == "" ]
+			then
+				ftpuser="anonymous"
+			fi
+			echo -e "${verde}Informe uma senha para tentativa de login (default: anonymous):${normalbold}"
+			read -p '>> ' ftppass
+			if [ "$ftppass" == "" ]
+			then
+				ftppass="anonymous"
+			fi
+			echo -e "${verde}Informe um comando para rodar apos o login (default: pwd):${normalbold}"
+			read -p '>> ' ftpcmd
+			if [ "$ftpcmd" == "" ]
+			then
+				ftpcmd="pwd"
+			fi
+			echo -e '\n'
+			python $TCScripts/enumftp.py $ip $ftpport $ftpuser $ftppass $ftpcmd
+			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
+        		read -p '>> ' opcao
+        		if [ "$opcao" == "s" ]
+        		then
+                		tc_enumeration
+        		else
+                		exec $TCPath/TwinCrows.sh
+        		fi
+		;;
+
+		2)
+			centralizado "${azulbold}===== Enumeracao de NetBIOS/SMB =====\n\n${normal}"
+			echo -e "${cinza}Este modulo utiliza o enum4linux para fazer uma varredura nos servicos de NetBIOS/SMB e tras informacoes importantes caso seja possivel."
+			echo
+			echo -e "${verde}Informe o IP do servidor alvo:${normalbold}"
+			read -p '>> ' ip
+			centralizado "${azulbold}===== RESULTADO =====${normal}\n"
+        		echo
+			enum4linux -a $ip
+			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
+                        read -p '>> ' opcao
+                        if [ "$opcao" == "s" ]
+                        then
+                                tc_enumeration
+                        else
+                                exec $TCPath/TwinCrows.sh
+                        fi
+		;;
+
+		3)
+			centralizado "${azulbold}===== Enumeracao e bruteforce de SMTP =====\n\n${normal}"
+			echo -e "${cinza}Este modulo faz a enumeracao do servico de SMTP na porta 25 e faz bruteforce para encontrar usuarios validos. o TwinCrows tem uma wordlist padrao, mas uma nova pode ser informada."
+			echo
+			echo -e "${verde}Informe o IP do servidor alvo:${normalbold}"
+			read -p '>> ' ip
+			echo -e "${verde}Informe o caminho de uma wordlist ou pressione enter para usar a padrao:${normalbold}"
+			read -p '>> ' wl
+			if [ "$wl" == "" ]
+			then
+				wl=$TCWordlists/usernames.txt
+			fi
+			centralizado "${azulbold}===== RESULTADO =====${normal}\n"
+        		echo
+			python $TCScripts/enumsmtp.py $ip $wl
+			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
+                        read -p '>> ' opcao
+                        if [ "$opcao" == "s" ]
+                        then
+                                tc_enumeration
+                        else
+                                exec $TCPath/TwinCrows.sh
+                        fi
+		;;
+
+
+	esac
+	done
+
+}
+
+
+
+
 
 
 

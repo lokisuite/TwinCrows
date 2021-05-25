@@ -4,4 +4,5 @@ lynx
 python3
 proxychains
 exiftool
+enum4linux
 tor
