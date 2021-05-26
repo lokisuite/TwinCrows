@@ -187,7 +187,7 @@ do
 # =========================================================================== #
 # ============================== < Nmap utils > ============================= #
 # =========================================================================== #
-	12)
+	13)
 		centralizado "${azulbold}===== Nmap utils =====\n\n${normal}"
 		echo -e "${cinza}Este modulo traz algumas opcoes pre configuradas de utilizacao do nmap, como o nmap e uma ferramenta extremamente completa, estes modulos sao so uma fracao de sua capacidade."
 		echo
