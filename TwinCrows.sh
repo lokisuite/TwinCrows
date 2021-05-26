@@ -57,7 +57,7 @@ tc_banner
 # =========================================================================== #
 
 centralizado "git: https://github.com/lokisuite/TwinCrows.git\n"
-centralizado "${vermelho}v 1.1.0\n${normal}"
+centralizado "${vermelho}v 1.2.0\n${normal}"
 
 echo -e "\n\n${cinza}TwinCrows e uma suite de ferramentas de reconhecimento e enumeracao que auxilia na obtencao de informacoes de alvos. A suite permite reconhecimento desde infra a tecnologias e servicos operantes reunindo varias abordagens diferentes.\nEnjoy!!${normal}\n"
 

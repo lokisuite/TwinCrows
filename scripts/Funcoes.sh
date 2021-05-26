@@ -372,6 +372,8 @@ tc_enumeration() {
         echo -e "${verde}1 - FTP Enumeration"
 	echo -e "2 - NetBIOS/SMB Enumeration"
 	echo -e "3 - SMTP Enumeration e bruteforce"
+	echo -e "4 - NSE Enumeration"
+	echo -e "5 - SNMP Enumeration"
         echo
         echo -e "0 - voltar${normal}"
 
@@ -446,10 +448,16 @@ tc_enumeration() {
 
 		3)
 			centralizado "${azulbold}===== Enumeracao e bruteforce de SMTP =====\n\n${normal}"
-			echo -e "${cinza}Este modulo faz a enumeracao do servico de SMTP na porta 25 e faz bruteforce para encontrar usuarios validos. o TwinCrows tem uma wordlist padrao, mas uma nova pode ser informada."
+			echo -e "${cinza}Este modulo faz a enumeracao do servico de SMTP na porta 25 e faz bruteforce para encontrar usuarios validos utilizando o comando VRFY, nem todos os servicos tem esta vulnerabilidade. o TwinCrows tem uma wordlist padrao, mas uma nova pode ser informada."
 			echo
 			echo -e "${verde}Informe o IP do servidor alvo:${normalbold}"
 			read -p '>> ' ip
+			echo -e "${verde}Informe a porta caso seja diferente de 25, ou pressione enter:${normalbold}"
+			read -p '>> ' porta
+			if [ "$porta" == "" ]
+			then
+				porta=25
+			fi
 			echo -e "${verde}Informe o caminho de uma wordlist ou pressione enter para usar a padrao:${normalbold}"
 			read -p '>> ' wl
 			if [ "$wl" == "" ]
@@ -458,7 +466,7 @@ tc_enumeration() {
 			fi
 			centralizado "${azulbold}===== RESULTADO =====${normal}\n"
         		echo
-			python $TCScripts/enumsmtp.py $ip $wl
+			python $TCScripts/enumsmtp.py $ip $porta $wl
 			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
                         read -p '>> ' opcao
                         if [ "$opcao" == "s" ]
@@ -468,6 +476,81 @@ tc_enumeration() {
                                 exec $TCPath/TwinCrows.sh
                         fi
 		;;
+		4)
+			umount /tmp/tcnfs 2> /dev/null
+			rm -rf /tmp/tcnfs 2> /dev/null
+			centralizado "${azulbold}===== Enumeracao de NSE =====\n\n${normal}"
+			echo -e "${cinza}Este modulo faz a enumeracao do servico de NSE, e se vulneravel, faz a montagem do diretorio compartilhado com seus respectivos acessos."
+			echo
+			echo -e "${verde}Informe o IP do servidor alvo:${normalbold}"
+			read -p '>> ' ip
+			echo -e "${verde}Informe a porta caso seja diferente de 2049, ou pressione enter:${normalbold}"
+			read -p '>> ' porta
+			if [ "$porta" == "" ]
+			then
+				porta=2049
+			fi
+			echo -e "\n${azul}Versoes suportadas:${normal}"
+			rpcinfo -p $ip | grep nfs
+			vernfs=$(rpcinfo -p $ip | grep nfs | grep tcp | cut -c15-15 | head -1)
+			echo -e "\n${azul}Diretorios compartilhados:${normal}"
+			showmount -e $ip
+			dirnfs=$(showmount -e $ip | grep -v Export | cut -d "*" -f1)
+			echo -e "\n${azul}Montando diretorio em /tmp/tcnfs...${normal}"
+			sleep 0.05
+			mkdir -p /tmp/tcnfs
+			mount -t nfs -o nfsvers=$vernfs $ip:$dirnfs /tmp/tcnfs
+			echo -e "\n${azulbold}Diretorio montado em /tmp/tcnfs Rodando comando ls -la${normal}"
+			ls -la /tmp/tcnfs
+			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
+                        read -p '>> ' opcao
+                        if [ "$opcao" == "s" ]
+                        then
+                                tc_enumeration
+                        else
+                                exec $TCPath/TwinCrows.sh
+                        fi
+
+		;;
+		5)
+			centralizado "${azulbold}===== Enumeracao de SNMP =====\n\n${normal}"
+			echo -e "${cinza}Este modulo faz a enumeracao do servico de SNMP, e se vulneravel, faz a montagem do diretorio compartilhado com seus respectivos acessos."
+			echo
+			echo -e "${verde}Informe o IP do host alvo:${normalbold}"
+			read -p '>> ' ip
+			echo -e "${verde}Informe o caminho para uma wordlist de communities ou pressione enter para usar a padrao:${normalbold}"
+			read -p '>> ' wl
+			echo -e "${azul}Procurando por communities...${normal}\n"
+			if [ "$wl" == "" ]
+			then
+				wl=$TCWordlists/snmp.txt
+			fi
+			onesixtyone -c $wl $ip | cut -d " " -f1,2 | grep -v "Scanning"
+			while [ "$com" == "" ]
+			do
+				echo -e "\n${verde}Qual comunnubity deseja utilizar?${normalbold}"
+				read -p '>> ' com
+			done
+			xterm -title "SNMPWALK" -hold -geometry 96x120+0+0 -e snmpwalk -c $com -v1 $ip &
+			echo -e "\n${azul}Executando checagem de SNMP, pode demorar um pouco...${normal}\n"
+			snmp-check $ip -c $com
+			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
+                        read -p '>> ' opcao
+                        if [ "$opcao" == "s" ]
+                        then
+                                tc_enumeration
+                        else
+                                exec $TCPath/TwinCrows.sh
+                        fi
+
+		;;
+		0)
+			exec $TCPath/TwinCrows.sh
+		;;
+		*)
+	                echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+       		 ;;
+
 
 
 	esac

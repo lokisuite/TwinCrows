@@ -5,4 +5,10 @@ python3
 proxychains
 exiftool
 enum4linux
+rpcinfo
+showmount
+mount
+onesixtyone
+snmpwalk
+snmp-check
 tor
