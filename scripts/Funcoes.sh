@@ -224,7 +224,7 @@ tc_whatweb() {
 	echo
 	centralizado "${azulbold}===== RESULTADO =====${normal}\n"
 	echo
-	whatweb -v $dominio
+	whatweb -v $dominio -U "TwinCrows"
 	rm -f ip
         echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]:${normalbold}"
         read -p '>> ' opcao
