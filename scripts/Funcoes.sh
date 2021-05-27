@@ -100,7 +100,7 @@ tc_map_dom() {
 	echo -e "\n\n${amarelo}---- TXT info -----------------------------------------${normal}\n"
 	host -t txt $dominio
 	echo -e "\n\n${amarelo}---- HINFO --------------------------------------------${normal}\n"
-	host -t hinnfo $dominio
+	host -t hinfo $dominio
 	echo -e "\n\n${amarelo}---- Tentativa de transferencia de zona  --------------${normal}\n"
 	for dns in $(host -t ns $dominio | cut -d " " -f4)
 	do

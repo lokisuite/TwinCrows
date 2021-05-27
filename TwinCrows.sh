@@ -91,6 +91,9 @@ dependencias
 # =========================================================================== #
 # ================================ < Menu > ================================= # 
 # =========================================================================== #
+
+terminal="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]}──[${azulbold}opcao${vermbold}]\n└─────►${normal}"
+
 while :
 do
 
@@ -105,8 +108,8 @@ do
 	echo -e "0 - sair${normal}"
 
 	echo -e "${normalbold}"
-
-	read  -p '>> ' opcao
+	printf $terminal
+	read  -p ' ' opcao
 
 	echo
 
