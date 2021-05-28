@@ -8,6 +8,7 @@ readonly TCLibPath="$TCPath/lib"
 readonly TCScripts="$TCPath/scripts"
 readonly TCWordlists="$TCPath/wordlists"
 readonly TCPayloads="$TCPath/payloads"
+TCLang=$(echo $LANG | cut -d "." -f1)
 
 # =========================================================================== #
 # =========================== < Incluindo Libs > ============================ # 
@@ -66,11 +67,29 @@ dependencias() {
 	local dep=()
 	for lin in $(cat $TCLibPath/dependencias)
 	do
-		ins=$(builtin type -p $lin | wc -l)
-		if [ "$ins" == 0 ]
+		if [ "$lin" == "postgresql" ]
 		then
-			echo -e "${vermbold}[-] $lin nao instalado.${normal}"
-			dep+=($lin)
+			ins=$(dpkg --get-selections | grep postgresql | wc -l)
+			if [ "$ins" == 0 ]
+			then
+				echo -e "${vermbold}[-] $lin nao instalado.${normal}"
+				dep+=($lin)
+			fi
+		elif [ "$lin" == "metasploit-framework" ]
+		then
+			ins=$(builtin type -p msfconsole | wc -l)
+			if [ "$ins" == 0 ]
+			then
+				echo -e "${vermbold}[-] $lin nao instalado.${normal}"
+				dep+=($çin)
+			fi
+		else
+			ins=$(builtin type -p $lin | wc -l)
+			if [ "$ins" == 0 ]
+			then
+				echo -e "${vermbold}[-] $lin nao instalado.${normal}"
+				dep+=($lin)
+			fi
 		fi
 	done
 	sleep 0.05
@@ -99,12 +118,13 @@ do
 
 	echo
 	echo -e "${verde}"
-	echo -e "1 - HTML Parsing			7 - Whatweb			13 - Payloads executaveis"
-	echo "2 - whois				8 - Pagesearch"
-	echo "3 - Mapeamento de dominio		9 - PingSweep"
-	echo "4 - Bruteforce de subdominios		10 - Mutacao de wordlist"
-	echo "5 - Pesquisa de DNS reverso		11 - Analise de metadados"
-	echo "6 - Dirsearch				12 - Enumeration"
+	echo -e "1 - HTML Parsing              8 - Pagesearch"
+	echo -e "2 - whois                     9 - PingSweep"
+	echo -e "3 - Mapeamento de dominio     10 - Mutacao de wordlist"
+	echo -e "4 - Bruteforce de subdominios 11 - Analise de metadados"
+	echo -e "5 - Pesquisa de DNS reverso   12 - Enumeration"
+	echo -e "6 - Dirsearch                 13 - Payloads msfvenom"
+	echo -e "7 - Whatweb"
 	echo
 	echo -e "0 - sair${normal}"
 

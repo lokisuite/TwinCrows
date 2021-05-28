@@ -23,14 +23,36 @@ dependencias() {
 	echo -e "\n\n"
 	for lin in $(cat $TCLibPath/dependencias)
 	do
-		ins=$(builtin type -p $lin | wc -l)
-        	if [ "$ins" == 0 ]
-        	then
-                	echo -e "${vermbold}[-] $lin nao instalado.${normal}"
-                	dep+=($lin)
-       	 	else
-                	echo -e "${azulbold}[+] $lin instalado.${normal}"
-        	fi
+		if [ "$lin" == "postgresql" ]
+		then
+			ins=$(dpkg --get-selections | grep postgresql | wc -l)
+			if [ "$ins" == 0 ]
+			then
+				echo -e "{vermbold}[-] $lin nao instalado.${normal}"
+				dep+=($lin)
+			else
+				echo -e "${azulbold}[+] $lin instalado.${normal}"
+			fi
+		elif [ "$lin" == "metasploit-framework" ]
+		then
+			ins=$(builtin type -p msfconsole | wc -l)
+			if [ "$ins" == 0 ]
+			then
+				echo -e "${vermvold}[-] $lin nao instalado.${normal}"
+				dep+=($lin)
+			else
+				echo -e "${azulbold}[+] $lin instalado.${normal}"
+			fi
+		else
+			ins=$(builtin type -p $lin | wc -l)
+        		if [ "$ins" == 0 ]
+        		then
+                		echo -e "${vermbold}[-] $lin nao instalado.${normal}"
+                		dep+=($lin)
+       	 		else
+                		echo -e "${azulbold}[+] $lin instalado.${normal}"
+        		fi
+		fi
 	done
 	sleep 0.05
 	if [ ! -z "$dep" ]

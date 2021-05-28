@@ -18,15 +18,15 @@ cd TwinCrows
 ```
 **Dê permissão de execussão**
 ```
-chmod +x TwinCrows.sh
+chmod +x TwinCrows
 ```
 **Rode o help do TwinCrows**
 ```
-./TwinCrows.sh -h
+./TwinCrows -h
 ```
 **Para instalar as dependências**
 ```
-./TwinCrows.sh -d
+./TwinCrows -d
 ```
 
 ## Modos de uso básico
