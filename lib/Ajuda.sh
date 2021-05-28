@@ -8,7 +8,7 @@ tc_ajuda() {
 
 	MODO DE USO
 		Deve rodar com permissao de root.
-		Ao executar ./TwinCrows.sh a interface carregara um menu diversificado
+		Ao executar ./TwinCrows a interface carregara um menu diversificado
 		de opcoes para coleta de informacoes de infra e web do alvo.
 		Todas as acoes exploradas nesta aplicacao se resumem nas principais
 		tecnicas de fingerprint.

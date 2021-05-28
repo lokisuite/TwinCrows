@@ -7,6 +7,7 @@ readonly TCPath=$(dirname $(readlink -f "$0"))
 readonly TCLibPath="$TCPath/lib"
 readonly TCScripts="$TCPath/scripts"
 readonly TCWordlists="$TCPath/wordlists"
+readonly TCPayloads="$TCPath/payloads"
 
 # =========================================================================== #
 # =========================== < Incluindo Libs > ============================ # 
@@ -57,7 +58,7 @@ tc_banner
 # =========================================================================== #
 
 centralizado "git: https://github.com/lokisuite/TwinCrows.git\n"
-centralizado "${vermelho}v 1.2.0\n${normal}"
+centralizado "${vermelho}v 1.3.0\n${normal}"
 
 echo -e "\n\n${cinza}TwinCrows e uma suite de ferramentas de reconhecimento e enumeracao que auxilia na obtencao de informacoes de alvos. A suite permite reconhecimento desde infra a tecnologias e servicos operantes reunindo varias abordagens diferentes.\nEnjoy!!${normal}\n"
 
@@ -71,7 +72,6 @@ dependencias() {
 			echo -e "${vermbold}[-] $lin nao instalado.${normal}"
 			dep+=($lin)
 		fi
-		sleep 0.05
 	done
 	sleep 0.05
 	if [ ! -z "$dep" ]
@@ -92,13 +92,14 @@ dependencias
 # ================================ < Menu > ================================= # 
 # =========================================================================== #
 
-terminal="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]}──[${azulbold}opcao${vermbold}]\n└─────►${normal}"
+nvl1="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]\n└─────►${normal}"
 
 while :
 do
 
 	echo
-	echo -e "${verde}1 - HTML Parsing			7 - Whatweb"
+	echo -e "${verde}"
+	echo -e "1 - HTML Parsing			7 - Whatweb			13 - Payloads executaveis"
 	echo "2 - whois				8 - Pagesearch"
 	echo "3 - Mapeamento de dominio		9 - PingSweep"
 	echo "4 - Bruteforce de subdominios		10 - Mutacao de wordlist"
@@ -108,7 +109,7 @@ do
 	echo -e "0 - sair${normal}"
 
 	echo -e "${normalbold}"
-	printf $terminal
+	printf $nvl1
 	read  -p ' ' opcao
 
 	echo
@@ -185,12 +186,20 @@ do
 # ================== < Analise de metadados de arquivos > =================== #
 # =========================================================================== #
         12)
+		nvl2="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Enumeration${vermbold}]\n└─────►${normal}"
                 tc_enumeration $0
+        ;;
+# =========================================================================== #
+# ============================ < Payloads > ================================= #
+# =========================================================================== #
+        13)
+		nvl2="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]\n└─────►${normal}"
+                tc_payload $0
         ;;
 # =========================================================================== #
 # ============================== < Nmap utils > ============================= #
 # =========================================================================== #
-	13)
+	14)
 		centralizado "${azulbold}===== Nmap utils =====\n\n${normal}"
 		echo -e "${cinza}Este modulo traz algumas opcoes pre configuradas de utilizacao do nmap, como o nmap e uma ferramenta extremamente completa, estes modulos sao so uma fracao de sua capacidade."
 		echo

