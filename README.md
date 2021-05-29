@@ -28,6 +28,17 @@ chmod +x TwinCrows
 ```
 ./TwinCrows -d
 ```
+## Recursos
+
+- Parsing de HTML
+- Análises de dominios
+- Análises de DNS
+- Bruteforces
+- Manipulação de wordlists
+- Enumeração de serviços
+- Exploração de vulnerabilidades
+- Criação de payloads com Msfvenom
+
 
 ## Modos de uso básico
 
