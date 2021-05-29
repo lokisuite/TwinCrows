@@ -13,7 +13,4 @@ snmpwalk
 snmp-check
 postgresql
 metasploit-framework
-apksigner
-keytool
-jarsigner
 tor

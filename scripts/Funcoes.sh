@@ -293,6 +293,89 @@ tc_pingsweep() {
         fi
 }
 
+tc_wl_wk() {
+	tc_banner
+
+	centralizado "${azulbold}===== WORDLISTS WORK =====\n\n${normal}"
+	echo -e "${cinza}Este modulo permite a fazer manipulacao e criacao de wordlists personalizadas.${normal}"
+
+
+	while :
+	do
+
+        echo
+	echo -e "${verde}"
+        echo -e "1 - Mutacao de wordlist"
+	echo -e "2 - Geracao de usuarios e e-mails"
+        echo
+        echo -e "0 - voltar${normal}"
+
+        echo -e "${normalbold}"
+	printf $nvl2
+        read -p ' ' opcao
+
+        echo
+
+        case $opcao in
+
+		1)
+			tc_mt_wl
+		;;
+		2)
+			tc_user_mail
+		;;
+		0)
+			exec $TCPath/TwinCrows
+		;;
+		*)
+	                echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+       		 ;;
+
+
+
+	esac
+	done
+
+
+}
+
+tc_user_mail() {
+	centralizado "${azulbold}===== Geracao de usuarios e senhas =====\n\n${normal}"
+	echo -e "${cinza}Este modulo gera uma wordlist de possiveis usuarios e uma wordlist de possiveis e-mails, a partir de uma lista de nomes. Pode ser usado para descobrir acessos validos a partir de uma lista de nomes de pessoas envolvidas no alvo."
+	echo
+	printf "${verde}Informe o caminho da lista de nomes: ${normalbold}"
+	read nomes
+	printf "${verde}Informe o dominio do alvo: ${normalbold}"
+	read dominio
+	echo -e "${azulbold}\nGerando as listas..."
+	python3 $TCScripts/userMail.py $nomes $dominio
+	sleep 1
+	echo -e "${azulbold}\nWordlists salvas em $TCWordlists/usuarios.txt e TCWordlists/emails.txt${normal}"
+	echo
+	printf "${verdebold}\n\nDeseja criar uma nova wordlist? [s/n]: ${normalbold}"
+        read opcao
+        if [ "$opcao" == "s" ]
+        then
+                tc_user_mail
+        else
+                tc_wl_wk
+        fi
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 tc_mt_wl() {
 	centralizado "${azulbold}===== Mutacao de Wordlist =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma mutacao de palavras chave para explorar suas variacoes, quanto maior a lista de palavras chave, maior sera o resultado final."
@@ -313,7 +396,7 @@ tc_mt_wl() {
         then
                 tc_mt_wl
         else
-                exec $1
+                tc_wl_wk
         fi
 
 
