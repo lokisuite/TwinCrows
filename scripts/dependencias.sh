@@ -54,6 +54,18 @@ dependencias() {
         		fi
 		fi
 	done
+	for lin in $(cat $TCLibPath/dependencias_apk)
+	do
+		ins=$(dpkg --get-selections | grep $lin | wc -l)
+		if [ "$ins" == 0 ]
+		then
+			echo -e "${vermbold}[-] $lin nao instalado.${normal}"
+			dep+=($lin)
+		else
+			echo -e "${azulbold}[+] $lin instalado.${normal}"
+		fi
+	done
+
 	sleep 0.05
 	if [ ! -z "$dep" ]
 	then
@@ -69,6 +81,15 @@ dependencias() {
 				echo -e "${cinza}Para que o TwinCrows rode utilizando a rede Tor para anonimizacao, e necessario incluir 'socks5 127.0.0.1 9050' sem aspas  no arquivo de configuracao que se encontra em /etc/proxychains*.conf, caso tenha duvidas, procure o manual do Tor e do proxychains..${normal}"
 			fi
 		done
+		clear
+		echo -e "\n\n"
+		echo -e "${azulbold}Atualizando bibliotecas. ${normal}"
+		apt update && apt upgrade
+		mv $TCLibPath/apktool* /usr/local/bin
+		chmod a+x /usr/local/bin
+		apt remove apktool
+		apt install apktool -y
+		apktool empty-framework-dir --force
 		echo -e "\n\n"
 		centralizado "${azulbold}[+] Dependencias instaladas, execute normalmente.${normal}"
 		exit

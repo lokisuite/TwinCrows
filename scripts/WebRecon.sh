@@ -46,5 +46,4 @@ webrecon() {
                 	fi
         	done 
 	fi
-	sair
 }

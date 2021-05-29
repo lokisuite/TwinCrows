@@ -13,4 +13,6 @@ snmpwalk
 snmp-check
 postgresql
 metasploit-framework
+apktool
+zipalign
 tor

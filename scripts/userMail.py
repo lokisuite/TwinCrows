@@ -5,8 +5,8 @@ import string
 
 dic = {}
 dominio = sys.argv[2]
-filetxt = open('wordlists/usuarios.txt', 'w')
-emailtxt = open('wordlists/email.txt', 'w')
+filetxt = open('outputs/usuarios.txt', 'w')
+emailtxt = open('outputs/email.txt', 'w')
 
 
 def monta_email(email):
