@@ -54,17 +54,6 @@ dependencias() {
         		fi
 		fi
 	done
-	for lin in $(cat $TCLibPath/dependencias_apk)
-	do
-		ins=$(dpkg --get-selections | grep $lin | wc -l)
-		if [ "$ins" == 0 ]
-		then
-			echo -e "${vermbold}[-] $lin nao instalado.${normal}"
-			dep+=($lin)
-		else
-			echo -e "${azulbold}[+] $lin instalado.${normal}"
-		fi
-	done
 
 	sleep 0.05
 	if [ ! -z "$dep" ]
@@ -83,18 +72,22 @@ dependencias() {
 		done
 		clear
 		echo -e "\n\n"
-		echo -e "${azulbold}Atualizando bibliotecas. ${normal}"
-		apt update && apt upgrade
-		mv $TCLibPath/apktool* /usr/local/bin
-		chmod a+x /usr/local/bin
-		apt remove apktool
-		apt install apktool -y
-		apktool empty-framework-dir --force
-		echo -e "\n\n"
-		centralizado "${azulbold}[+] Dependencias instaladas, execute normalmente.${normal}"
-		exit
 	else
         	echo -e "\n"
 	fi
-	centralizado "${azulbold}[+] Todas as dependencias ja estao instaladas. Execute a aplicacao normalmente.\n\n${normal}"
+for lin in $(cat $TCLibPath/dependencias_apk)
+do
+	apt install $lin -y
+done
+echo -e "${azulbold}Atualizando bibliotecas. ${normal}"
+apt update && apt upgrade
+mv $TCLibPath/apktool* /usr/local/bin
+chmod a+x /usr/local/bin
+apt remove apktool -y
+apt install apktool -y
+apktool empty-framework-dir --force
+echo -e "\n\n"
+centralizado "${azulbold}[+] Todas as dependencias ja estao instaladas. Execute a aplicacao normalmente.\n\n${normal}"
+exit
+
 }
