@@ -20,14 +20,15 @@ cd TwinCrows
 ```
 chmod +x TwinCrows
 ```
+**Para instalar as dependências (importante executar esta opcao antes de iniciar normalmente)**
+```
+./TwinCrows -d
+```
 **Rode o help do TwinCrows**
 ```
 ./TwinCrows -h
 ```
-**Para instalar as dependências**
-```
-./TwinCrows -d
-```
+
 ## Recursos
 
 - Parsing de HTML

