@@ -6,6 +6,10 @@ TwinCrows é uma ferramenta da suiteloki voltada para levantamento de informaç�
 
 TwinCrows pode fazer pesquisa desde servidores a informações escondidas além de permitir manipulação de wordlists.
 
+## :heavy_exclamation_mark: Requisitos
+
+- um sistema operacional baseado em Linux. Recomendamos Kali Linux 2021.1
+
 ## Instalação
 
 **Faça o download da ultima versão**
@@ -47,6 +51,3 @@ A interface do TwinCrows é intuitiva e traz um menu com várias opções que co
 
 ![TC](https://raw.githubusercontent.com/lokisuite/images/main/tc/tc_print.png)
 
-## :heavy_exclamation_mark: Requisitos
-
-- um sistema operacional baseado em Linux. Recomendamos Kali Linux 2021.1
