@@ -128,7 +128,7 @@ do
 	echo -e "04 - Bruteforce de subdominios        11 - Analise de metadados"
 	echo -e "05 - Pesquisa de DNS reverso          12 - Enumeration"
 	echo -e "06 - Dirsearch                        13 - Payloads msfvenom"
-	echo -e "07 - Whatweb"
+	echo -e "07 - Whatweb                          14 - Quebra de hashes"
 	echo
 	echo -e "0 - sair${normal}"
 
@@ -220,6 +220,12 @@ do
         13)
 		nvl2="${vermbold}┌─[${azulbold}Twin${normalbold}\xE2\x98\xA0${azulbold}Crows${vermbold}]──[${azulbold}Payloads${vermbold}]\n└─────►${normal}"
                 tc_payload $0
+        ;;
+# =========================================================================== #
+# ============================ < Payloads > ================================= #
+# =========================================================================== #
+        14)
+		tc_fenrircrack $0
         ;;
 # =========================================================================== #
 # ================================ < Sair > ================================= #

