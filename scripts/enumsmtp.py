@@ -28,7 +28,7 @@ try:
 		tcpport.send("VRFY "+user)
 		userresp = tcpport.recv(1024)
 		if banner == userresp:
-			print "O servico nao e vulneravel ao comando VRFY."
+			print "Nenhum usuario encontrado."
 			break
 		else:
 			print userresp
